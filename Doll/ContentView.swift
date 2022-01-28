@@ -61,7 +61,9 @@ struct ContentView: View {
                             .onExitCommand {
                                 statusBar.hidePopover()
                             }
-                    LaunchAtLogin.Toggle("Launch at login")
+                    LaunchAtLogin.Toggle {
+                        Text("Launch at login")
+                    }
                     Toggle("Show notification on full screen mode", isOn: $showAlertInFullScreenMode)
                             .onChange(of: showAlertInFullScreenMode) { enabled in
                                 AppSettings.showAlertInFullScreenMode = enabled

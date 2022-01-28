@@ -26,7 +26,7 @@ class StatusBarController {
 
             statusBarButton.action = #selector(onIconClicked(sender:))
             statusBarButton.target = self
-            statusBarButton.toolTip = "Hold option key ⌥ and click to config"
+            statusBarButton.toolTip = NSLocalizedString("Hold option key ⌥ and click to config", comment: "")
         }
     }
 

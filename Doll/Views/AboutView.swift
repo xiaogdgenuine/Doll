@@ -7,14 +7,18 @@ struct AboutView: View {
     @Binding var open: Bool
     var body: some View {
         VStack {
-            Group {
+            VStack(spacing: 32) {
                 Text("About Doll")
                         .font(.title)
+                Text("About author")
                 Text("Icon from [Darius Dan - Flaticon](https://www.flaticon.com/free-icons/reminder)")
 
-                Text("[How it works](https://example.com)")
+                HStack {
+                    Text("How it works?")
+                    Text("https://github.com/xiaogdgenuine/Doll")
+                }
 
-                Text("Like it? Tip me to show your love!:)")
+                Text("Tip me")
                 Image("WeChatTipQRCode").resizable().frame(width: 300, height: 300)
 
             }.padding()
