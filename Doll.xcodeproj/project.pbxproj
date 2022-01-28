@@ -7,11 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		3A05F0D44C56AF54405AF0C8 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 3A05F569906D4FC793ED3B11 /* README.md */; };
 		3A05F16312AEFBD25670304B /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 3A05FE513B0F76D50EE9A90B /* Assets.xcassets */; };
 		3A05F319D3B6EACC3882AF88 /* UserDefaultSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A05F135761A1F95B691AC9F /* UserDefaultSettings.swift */; };
 		3A05F5FEDD98F03B9741B9BC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A05F6A27D4869EB06B6E98D /* ContentView.swift */; };
 		3A05FBC07A5CF3CCC2701FBC /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A05F3535C3D4AB6303DEDA5 /* AppSettings.swift */; };
-		3A05FCCBB5460372C03F65E8 /* README.md in Sources */ = {isa = PBXBuildFile; fileRef = 3A05FC47BA03288743AC64D0 /* README.md */; };
 		3A05FCF2E46CD3CFEAB29839 /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A05F1218D99BE11708A20CF /* NotificationView.swift */; };
 		89CB806827A312340065CA70 /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = 89CB806727A312340065CA70 /* LaunchAtLogin */; };
 		89CB806B27A312430065CA70 /* Monitor in Frameworks */ = {isa = PBXBuildFile; productRef = 89CB806A27A312430065CA70 /* Monitor */; };
@@ -31,9 +31,9 @@
 		3A05F1218D99BE11708A20CF /* NotificationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
 		3A05F135761A1F95B691AC9F /* UserDefaultSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaultSettings.swift; sourceTree = "<group>"; };
 		3A05F3535C3D4AB6303DEDA5 /* AppSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
+		3A05F569906D4FC793ED3B11 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; name = README.md; path = Doll/README.md; sourceTree = "<group>"; };
 		3A05F6A27D4869EB06B6E98D /* ContentView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ContentView.swift; sourceTree = "<group>"; };
 		3A05F88D951B0284A8B90FF0 /* Doll.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Doll.app; sourceTree = BUILT_PRODUCTS_DIR; };
-		3A05FC47BA03288743AC64D0 /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
 		3A05FE513B0F76D50EE9A90B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3A05FF26C7DEDD4C5CBF1E98 /* Doll.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Doll.entitlements; sourceTree = "<group>"; };
 		89CB806427A311400065CA70 /* MonitorCore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = MonitorCore; sourceTree = "<group>"; };
@@ -68,6 +68,7 @@
 			isa = PBXGroup;
 			children = (
 				3A05F88D951B0284A8B90FF0 /* Doll.app */,
+				3A05F569906D4FC793ED3B11 /* README.md */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -85,7 +86,6 @@
 				3A05FF26C7DEDD4C5CBF1E98 /* Doll.entitlements */,
 				3A05F6A27D4869EB06B6E98D /* ContentView.swift */,
 				89CB808C27A36A1F0065CA70 /* Localizable.strings */,
-				3A05FC47BA03288743AC64D0 /* README.md */,
 			);
 			path = Doll;
 			sourceTree = "<group>";
@@ -250,7 +250,7 @@
 				3A05FCF2E46CD3CFEAB29839 /* NotificationView.swift in Sources */,
 				3A05F319D3B6EACC3882AF88 /* UserDefaultSettings.swift in Sources */,
 				3A05FBC07A5CF3CCC2701FBC /* AppSettings.swift in Sources */,
-				3A05FCCBB5460372C03F65E8 /* README.md in Sources */,
+				3A05F0D44C56AF54405AF0C8 /* README.md in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

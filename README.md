@@ -6,15 +6,15 @@ But we are not living in an ideal world, your teammates may need your help anyti
 
 Message apps like **Mail**, **Slack** and **Microsoft Teams** don't even offer a **_menu bar icon_** at all, so if you're working in a full screen window, or looking at another extra Monitor screen which can't show the Dock, there is no way you will notice the unread messages!
 
-![Basic usage](./Docs/Images/dock-only.png)
+![Basic usage](./Doll/Docs/Images/dock-only.png)
  
 (Sorry the notification center did notice you, but they will soon dismiss after a short period, if you miss that, you miss the message)
 
-![Notification center](./Docs/Images/notification.png)
+![Notification center](./Doll/Docs/Images/notification.png)
 
 It would be great if we could put the icon and badge of these apps into the **_Menu bar_**, that way we can always easily notice new messages across screens, just like this:
 
-![Show case](./Docs/Images/showcase.png)
+![Show case](./Doll/Docs/Images/showcase.png)
 
 # Doll?
 In my favor animation [《Darker than dark》](https://en.wikipedia.org/wiki/Darker_than_Black), if a **_Contractor_** use his power and never willing to pay the cost, eventually he will lose control of his power, become an emotionless **_Doll_**.
@@ -28,32 +28,32 @@ Minimum system requirement: **_macOS 11.0_** (Big Sur)
 # How to use?
 It's simple, first you search and select the app you want to monitor:
 
-![Basic usage](./Docs/Images/usage-1.png)
+![Basic usage](./Doll/Docs/Images/usage-1.png)
 
 Then Doll will ask for your permission to use the Accessibility API: 
 
-![ask-for-permission.png](./Docs/Images/ask-for-permission.png)
+![ask-for-permission.png](./Doll/Docs/Images/ask-for-permission.png)
 
 Please make sure you grant that permission to **Doll.app** otherwise nothing will be monitored!
 
-![grant-permission.png](./Docs/Images/grant-permission.png)
+![grant-permission.png](./Doll/Docs/Images/grant-permission.png)
 
 Done, you are all setup!
 Doll now will monitor all the badge update in the Dock, and sync the numbers into the menu bar!
 
-![running.png](./Docs/Images/running.png)
+![running.png](./Doll/Docs/Images/running.png)
 
 # I want to monitor more apps!
 You get it for free!
 
-![multiple.png](./Docs/Images/multiple.png)
+![multiple.png](./Doll/Docs/Images/multiple.png)
 
 # I want to change the Monitor app
 If the monitored app is running, click on the menu bar icon will simply open that app.
 
 But if you want to change stuffs, just hold the "**_Option key(⌥)_**" and click on the icon.
 
-![config.png](./Docs/Images/config.png)
+![config.png](./Doll/Docs/Images/config.png)
 
 # Security concern about the permission?
 **_Never! Ever! Trust! Anybody! in Internet!_**
