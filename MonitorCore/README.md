@@ -1,3 +1,1 @@
-# MonitorCore
-
-A description of this package.
+# Doll is a Mac app that help you watch badges!
