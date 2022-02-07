@@ -55,15 +55,26 @@ struct ContentView: View {
                 }
 
                 VStack(alignment: .leading, spacing: 12) {
-                    TextField("Select an app to monitor it's badge", text: keywordBinding)
+                    TextField("", text: keywordBinding)
+                            .placeholder(when: keyword.isEmpty) {
+                                Text("Select an app to monitor it's badge")
+                                        .selfSizeMask(
+                                                LinearGradient(
+                                                        gradient: Gradient(colors: [.blue, .red, .orange]),
+                                                        startPoint: .leading,
+                                                        endPoint: .trailing)
+                                        )
+                            }
                             .textFieldStyle(.plain)
-                            .customTextField(padding: 0, lineWidth: 0)
                             .onExitCommand {
                                 statusBar.hidePopover()
                             }
+                            .font(.system(size: 24))
+
                     LaunchAtLogin.Toggle {
-                        Text("Launch at login")
-                    }
+                                Text("Launch at login")
+                            }
+                            .padding([.top])
                     Toggle("Show notification on full screen mode", isOn: $showAlertInFullScreenMode)
                             .onChange(of: showAlertInFullScreenMode) { enabled in
                                 AppSettings.showAlertInFullScreenMode = enabled

@@ -9,8 +9,22 @@ extension View {
         }
     }
 
-    func customTextField(color: Color = .secondary, padding: CGFloat = 4, lineWidth: CGFloat = 1.0) -> some View { // <- Default settings
-        self.modifier(TextFieldModifier(color: color, padding: padding, lineWidth: lineWidth))
+    func placeholder<Content: View>(
+            when shouldShow: Bool,
+            alignment: Alignment = .leading,
+            @ViewBuilder placeholder: () -> Content) -> some View {
+
+        ZStack(alignment: alignment) {
+            placeholder().opacity(shouldShow ? 1 : 0)
+            self
+        }
+    }
+
+    func selfSizeMask<T: View>(_ mask: T) -> some View {
+        ZStack {
+            self.opacity(0)
+            mask.mask(self)
+        }.fixedSize()
     }
 }
 
