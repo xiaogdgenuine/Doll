@@ -13,6 +13,7 @@
 		3A05F5FEDD98F03B9741B9BC /* ContentView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A05F6A27D4869EB06B6E98D /* ContentView.swift */; };
 		3A05FBC07A5CF3CCC2701FBC /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A05F3535C3D4AB6303DEDA5 /* AppSettings.swift */; };
 		3A05FCF2E46CD3CFEAB29839 /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A05F1218D99BE11708A20CF /* NotificationView.swift */; };
+		3A05FF2A501FC942DB2CAC7D /* package.sh in Resources */ = {isa = PBXBuildFile; fileRef = 3A05F0C07C6E8DE7B29B3A12 /* package.sh */; };
 		89CB806827A312340065CA70 /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = 89CB806727A312340065CA70 /* LaunchAtLogin */; };
 		89CB806B27A312430065CA70 /* Monitor in Frameworks */ = {isa = PBXBuildFile; productRef = 89CB806A27A312430065CA70 /* Monitor */; };
 		89CB806D27A312430065CA70 /* Utils in Frameworks */ = {isa = PBXBuildFile; productRef = 89CB806C27A312430065CA70 /* Utils */; };
@@ -28,6 +29,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		3A05F0C07C6E8DE7B29B3A12 /* package.sh */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.script.sh; name = package.sh; path = scripts/package.sh; sourceTree = "<group>"; };
 		3A05F1218D99BE11708A20CF /* NotificationView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotificationView.swift; sourceTree = "<group>"; };
 		3A05F135761A1F95B691AC9F /* UserDefaultSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UserDefaultSettings.swift; sourceTree = "<group>"; };
 		3A05F3535C3D4AB6303DEDA5 /* AppSettings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AppSettings.swift; sourceTree = "<group>"; };
@@ -86,6 +88,7 @@
 				3A05FF26C7DEDD4C5CBF1E98 /* Doll.entitlements */,
 				3A05F6A27D4869EB06B6E98D /* ContentView.swift */,
 				89CB808C27A36A1F0065CA70 /* Localizable.strings */,
+				3A05F0C07C6E8DE7B29B3A12 /* package.sh */,
 			);
 			path = Doll;
 			sourceTree = "<group>";
@@ -207,6 +210,7 @@
 			files = (
 				3A05F16312AEFBD25670304B /* Assets.xcassets in Resources */,
 				89CB808A27A36A1F0065CA70 /* Localizable.strings in Resources */,
+				3A05FF2A501FC942DB2CAC7D /* package.sh in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -342,7 +346,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 0.0.1;
+				MARKETING_VERSION = 0.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.xiaogd.Doll;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -369,7 +373,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 0.0.1;
+				MARKETING_VERSION = 0.0.2;
 				PRODUCT_BUNDLE_IDENTIFIER = com.xiaogd.Doll;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
