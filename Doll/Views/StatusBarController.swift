@@ -31,23 +31,30 @@ class StatusBarController {
     }
 
     @objc func onIconClicked(sender: AnyObject) {
-        var isAppRunning = false
+        var appRunning = false
 
         if let monitoredApp = monitoredApp {
-            isAppRunning = MonitorService.isMonitoredAppRunning(appName: monitoredApp.appName)
+            appRunning = MonitorService.isMonitoredAppRunning(appName: monitoredApp.appName)
         }
 
         let noAppSelected = statusItem.button?.image == defaultIcon
         let isOptionKeyHolding = NSEvent.modifierFlags.contains(.option)
 
-        if noAppSelected || isOptionKeyHolding || !isAppRunning {
+        if noAppSelected || isOptionKeyHolding {
             if (mainPopover.isShown) {
                 hidePopover()
             } else {
                 showPopover()
             }
-        } else if let monitoredAppName = monitoredApp?.appName {
-            MonitorService.openMonitoredApp(appName: monitoredAppName)
+        } else if let monitoredAppName = monitoredApp?.appName,
+                  let monitoredAppBundleId = monitoredApp?.bundleId {
+            if !appRunning {
+                guard let appURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: monitoredAppBundleId) else { return }
+
+                NSWorkspace.shared.open(appURL)
+            } else {
+                MonitorService.openMonitoredApp(appName: monitoredAppName)
+            }
         }
     }
 
