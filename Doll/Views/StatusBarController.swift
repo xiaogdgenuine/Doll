@@ -2,8 +2,7 @@ import AppKit
 import Monitor
 import SwiftUI
 
-let iconSize: CGFloat = 21
-let padding: CGFloat = 8
+let iconSize: CGFloat = 20
 let defaultIcon = #imageLiteral(resourceName: "DefaultStatusBarIcon")
 
 class StatusBarController {
@@ -15,9 +14,8 @@ class StatusBarController {
 
     init(_ popover: NSPopover) {
         self.mainPopover = popover
-        statusBar = NSStatusBar()
+        statusBar = .system
         statusItem = statusBar.statusItem(withLength: iconSize)
-        statusItem.highlightMode = true
 
         if let statusBarButton = statusItem.button {
             statusBarButton.image = defaultIcon
@@ -97,8 +95,8 @@ class StatusBarController {
         }
 
         let textWidth = (text ?? "")
-                .width(withConstrainedHeight: 24, font: .systemFont(ofSize: 14))
-        statusItem.length = iconSize + textWidth + (text == nil ? padding * 2 : padding)
+                .width(withConstrainedHeight: iconSize, font: .systemFont(ofSize: 14))
+        statusItem.length = iconSize + textWidth
 
         // New notification comes in
         let oldText = statusItem.button?.title ?? ""
