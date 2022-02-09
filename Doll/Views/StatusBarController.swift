@@ -17,6 +17,7 @@ class StatusBarController {
         self.mainPopover = popover
         statusBar = NSStatusBar()
         statusItem = statusBar.statusItem(withLength: iconSize)
+        statusItem.highlightMode = true
 
         if let statusBarButton = statusItem.button {
             statusBarButton.image = defaultIcon
@@ -69,6 +70,7 @@ class StatusBarController {
             return
         }
 
+        statusItem.autosaveName = "Doll_\(app.bundleId)"
         updateBadgeText(nil)
         updateBadgeIcon(icon: NSWorkspace.shared.icon(forFile: appFullPath))
         hidePopover()
