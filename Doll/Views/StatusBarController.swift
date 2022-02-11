@@ -48,7 +48,9 @@ class StatusBarController {
         } else if let monitoredAppName = monitoredApp?.appName,
                   let monitoredAppBundleId = monitoredApp?.bundleId {
             if !appRunning {
-                guard let appURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: monitoredAppBundleId) else { return }
+                guard let appURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: monitoredAppBundleId) else {
+                    return
+                }
 
                 NSWorkspace.shared.open(appURL)
             } else {
@@ -81,7 +83,7 @@ class StatusBarController {
     func showPopover(popover: NSPopover? = nil) {
         if let statusBarButton = statusItem.button {
             (popover ?? mainPopover)
-                    .show(relativeTo: statusBarButton.bounds, of: statusBarButton, preferredEdge: NSRectEdge.maxY)
+                    .show(relativeTo: statusBarButton.bounds, of: statusBarButton, preferredEdge: .maxY)
         }
     }
 
@@ -134,11 +136,27 @@ class StatusBarController {
 
     private func createNotificationPopover(newText: String) -> NSPopover {
         let notificationPopover = NSPopover()
-        notificationPopover.contentSize = NSSize(width: statusItem.length + 16, height: 24 + NSStatusBar.system.thickness)
+        let textWidth = newText
+                .width(withConstrainedHeight: iconSize, font: .systemFont(ofSize: 14))
+        let horizonPadding: CGFloat = 32
+        let verticalPadding: CGFloat = 16
+        notificationPopover.contentSize = NSSize(width: iconSize + textWidth + horizonPadding, height: iconSize + verticalPadding)
         notificationPopover.behavior = .transient
+        notificationPopover.setValue(true, forKeyPath: "shouldHideAnchor")
+
+        var extraVerticalPadding: CGFloat = 0
+        if let statusBarButton = statusItem.button,
+           let statusBarWindow = statusBarButton.window,
+           let activeScreenSize = (NSScreen.main ?? NSScreen.getScreenWithMouse())?.frame {
+            // Calculate the extra padding in order to make sure popover content fully displayed
+            let buttonRect = statusBarButton.convert(statusBarButton.bounds, to: nil)
+            let buttonOrigin = statusBarWindow.convertPoint(toScreen: NSPoint(x: buttonRect.minX, y: buttonRect.minY))
+            extraVerticalPadding = max(buttonOrigin.y - activeScreenSize.height - statusBarButton.bounds.height + 8, 0)
+        }
+
 
         let targetApp = monitoredApp
-        let view = NotificationView(icon: statusItem.button?.image, badgeText: newText) {
+        let view = NotificationView(icon: statusItem.button?.image, badgeText: newText, extraVerticalPadding: extraVerticalPadding) {
             if let monitoredAppName = targetApp?.appName {
                 MonitorService.openMonitoredApp(appName: monitoredAppName)
             }
