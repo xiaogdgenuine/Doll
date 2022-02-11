@@ -22,7 +22,7 @@ In my favor animation [《Darker than dark》](https://en.wikipedia.org/wiki/Dar
 If we use too much **focus power** without paying the cost, what will we become >>__<<.
 
 # Install
-You can download the latest dmg file from [here](https://github.com/xiaogdgenuine/Doll/releases/tag/v0.0.2)
+You can download the latest dmg file from [here](https://github.com/xiaogdgenuine/Doll/releases/latest)
 Minimum system requirement: **_macOS 11.0_** (Big Sur)
 
 # How to use?
