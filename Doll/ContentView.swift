@@ -102,8 +102,10 @@ struct ContentView: View {
                             }
                         }
                 HStack {
-                    Button("Stop monitor") {
-                        statusBar.destroy()
+                    if let _ = statusBar.monitoredApp {
+                        Button("Stop monitor") {
+                            statusBar.destroy()
+                        }
                     }
 
                     Spacer()

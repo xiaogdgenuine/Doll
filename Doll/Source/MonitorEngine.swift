@@ -72,9 +72,7 @@ class MonitorEngine {
         if let unAssignedMonitor = (statusBars.first {
             $0.monitoredApp == nil
         }) {
-            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-                unAssignedMonitor.showPopover()
-            }
+            unAssignedMonitor.showPopover()
         } else {
             createNewInstance()
         }

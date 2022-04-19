@@ -12,6 +12,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // https://github.com/xiaogdgenuine/Doll/issues/4
         // Create new instance if the app relaunch again from Spotlight or manually open by user
         if appActivated {
+            print("Activated!")
             MonitorEngine.createNewInstanceIfNecessary()
         }
 

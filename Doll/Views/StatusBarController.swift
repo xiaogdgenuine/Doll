@@ -135,8 +135,8 @@ class StatusBarController {
         if let monitoredApp = monitoredApp {
             MonitorService.unObserve(appName: monitoredApp.appName)
             MonitorEngine.unMonitor(app: monitoredApp)
+            statusBar.removeStatusItem(statusItem)
         }
-        statusBar.removeStatusItem(statusItem)
     }
 
     private func createNotificationPopover(newText: String) -> NSPopover {
