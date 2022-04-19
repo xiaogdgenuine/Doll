@@ -45,7 +45,6 @@ public struct MonitorService {
 
     public static func unObserve(appName: String) {
         observedAppInfos.removeValue(forKey: appName)
-        print(observedAppInfos.count)
     }
 
     public static func openMonitoredApp(appName: String) {

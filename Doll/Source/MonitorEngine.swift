@@ -21,7 +21,7 @@ class MonitorEngine {
             }
 
             if monitoredApps.count == 0 {
-                return firstTimeSetup()
+                return createNewInstance()
             }
 
             monitoredApps.forEach { app in
@@ -29,7 +29,7 @@ class MonitorEngine {
                 statusBar.monitorApp(app: app)
             }
         } else {
-            firstTimeSetup()
+            createNewInstance()
         }
     }
 
@@ -64,7 +64,27 @@ class MonitorEngine {
         saveSelectedApps()
 
         if statusBars.count == 0 {
-            firstTimeSetup()
+            createNewInstance()
+        }
+    }
+
+    static func createNewInstanceIfNecessary() {
+        if let unAssignedMonitor = (statusBars.first {
+            $0.monitoredApp == nil
+        }) {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+                unAssignedMonitor.showPopover()
+            }
+        } else {
+            createNewInstance()
+        }
+    }
+
+    static func createNewInstance() {
+        let newStatusBar = createNewStatusBar()
+
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
+            newStatusBar.showPopover()
         }
     }
 
@@ -75,14 +95,6 @@ class MonitorEngine {
                 .joined(separator: ",")
         UserDefaults.standard.set(data, forKey: SETTING_MONITORED_APP_IDS)
         UserDefaults.standard.synchronize()
-    }
-
-    private static func firstTimeSetup() {
-        let newStatusBar = createNewStatusBar()
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            newStatusBar.showPopover()
-        }
     }
 
     private static func createNewStatusBar() -> StatusBarController {

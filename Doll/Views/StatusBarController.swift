@@ -18,6 +18,7 @@ class StatusBarController {
         statusItem = statusBar.statusItem(withLength: iconSize)
 
         if let statusBarButton = statusItem.button {
+            statusBarButton.sendAction(on: [.leftMouseUp, .rightMouseUp])
             statusBarButton.image = defaultIcon
             statusBarButton.image?.size = NSSize(width: iconSize, height: iconSize)
             statusBarButton.image?.isTemplate = false
@@ -38,8 +39,9 @@ class StatusBarController {
 
         let noAppSelected = statusItem.button?.image == defaultIcon
         let isOptionKeyHolding = NSEvent.modifierFlags.contains(.option)
+        let isRightClick = NSApp.currentEvent?.isRightClick == true
 
-        if noAppSelected || isOptionKeyHolding {
+        if noAppSelected || isOptionKeyHolding || isRightClick {
             if (mainPopover.isShown) {
                 hidePopover()
             } else {
@@ -65,8 +67,11 @@ class StatusBarController {
         guard let appFullPath = NSWorkspace.shared.urlForApplication(withBundleIdentifier: app.bundleId)?.absoluteURL.path else {
             return
         }
+
         guard let targetBundle = Bundle(path: appFullPath),
-              let appName = targetBundle.object(forInfoDictionaryKey: kCFBundleNameKey as String) as? String else {
+              let appName = (
+                      targetBundle.object(forInfoDictionaryKey: "CFBundleDisplayName") ??
+                      targetBundle.object(forInfoDictionaryKey: kCFBundleNameKey as String)) as? String else {
             return
         }
 
@@ -130,8 +135,8 @@ class StatusBarController {
         if let monitoredApp = monitoredApp {
             MonitorService.unObserve(appName: monitoredApp.appName)
             MonitorEngine.unMonitor(app: monitoredApp)
-            statusBar.removeStatusItem(statusItem)
         }
+        statusBar.removeStatusItem(statusItem)
     }
 
     private func createNotificationPopover(newText: String) -> NSPopover {
