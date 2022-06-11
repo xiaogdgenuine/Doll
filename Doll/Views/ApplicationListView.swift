@@ -6,10 +6,7 @@ struct ApplicationListView: View {
     @Binding var activeItem: AppItem?
     var allApps: [AppItem] = []
     var gridLayout = [
-        GridItem(.fixed(cellSize), alignment: .top),
-        GridItem(.fixed(cellSize), alignment: .top),
-        GridItem(.fixed(cellSize), alignment: .top),
-        GridItem(.fixed(cellSize), alignment: .top)]
+        GridItem(.adaptive(minimum: cellSize, maximum: cellSize), alignment: .top)]
 
     var body: some View {
         ScrollView {

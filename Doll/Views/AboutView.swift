@@ -4,7 +4,6 @@ import Monitor
 import LaunchAtLogin
 
 struct AboutView: View {
-    @Binding var open: Bool
     var body: some View {
         VStack {
             VStack(spacing: 32) {
@@ -22,21 +21,6 @@ struct AboutView: View {
                 Image("WeChatTipQRCode").resizable().frame(width: 300, height: 300)
 
             }.padding()
-
-            Spacer()
-
-            HStack {
-                Spacer()
-                Button("Close") {
-                    open = false
-                }
-            }.padding()
         }.frame(maxHeight: .infinity)
-    }
-}
-
-struct AboutView_Previews: PreviewProvider {
-    static var previews: some View {
-        AboutView(open: .constant(true))
     }
 }

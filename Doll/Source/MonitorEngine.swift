@@ -1,12 +1,24 @@
 import Foundation
 import SwiftUI
+import Monitor
 
+let defaultWindowSize = NSSize(width: 800, height: 600)
 let SETTING_MONITORED_APP_IDS = "SETTING_MONITORED_APP_IDS"
 
 class MonitorEngine {
-    static var statusBars: [StatusBarController] = []
 
-    static func setup() {
+    static var shared = MonitorEngine()
+
+    var configWindow = NSWindow(contentRect: NSRect(origin: .zero, size: defaultWindowSize), styleMask: [.closable, .titled], backing: .buffered, defer: false)
+    var statusBars: [StatusBarController] = []
+    @Published var monitoredApps: [MonitoredApp] = []
+
+    private init() {
+    }
+
+    func setup() {
+        MonitorService.setupObservers()
+        
         if let data = UserDefaults.standard.value(forKey: SETTING_MONITORED_APP_IDS) as? String {
             let monitoredAppIds = data.split(separator: ",").map(String.init)
             let monitoredApps: [MonitoredApp] = monitoredAppIds.map { bundleId in
@@ -20,97 +32,86 @@ class MonitorEngine {
                 return MonitoredApp(bundleId, appName: appName)
             }
 
+            MonitorEngine.shared.monitoredApps = monitoredApps
+
             if monitoredApps.count == 0 {
-                return createNewInstance()
+                return showConfigWindow()
             }
 
             monitoredApps.forEach { app in
                 let statusBar = createNewStatusBar()
                 statusBar.monitorApp(app: app)
+                statusBars.append(statusBar)
             }
         } else {
-            createNewInstance()
+            showConfigWindow()
         }
     }
 
-    static func monitor(app: MonitoredApp, statusBar: StatusBarController? = nil) {
-        if let statusBar = statusBar {
-            statusBar.monitorApp(app: app)
-            if statusBar.monitoredApp == nil {
-                statusBar.monitoredApp = app
-            }
+    func monitor(newApp: MonitoredApp, at: Int?, statusBar: StatusBarController? = nil) {
+        if let statusBar = statusBar,
+            let oldAppIndex = at {
+            statusBar.monitorApp(app: newApp)
+            monitoredApps[oldAppIndex] = newApp
         } else {
             if (statusBars.contains {
-                $0.monitoredApp == app
+                $0.monitoredApp == newApp
             }) {
                 return
             }
 
             let firstTimeSetup = statusBars.count == 1 && statusBars[0].monitoredApp == nil
             let newStatusBar = firstTimeSetup ? statusBars[0] : createNewStatusBar()
-            newStatusBar.monitorApp(app: app)
-            statusBars.forEach {
-                $0.hidePopover()
-            }
+            newStatusBar.monitorApp(app: newApp)
+            statusBars.append(newStatusBar)
+            monitoredApps.append(newApp)
         }
 
         saveSelectedApps()
     }
 
-    static func unMonitor(app: MonitoredApp) {
+    func unMonitor(app: MonitoredApp) {
         statusBars = statusBars.filter {
             $0.monitoredApp != app
         }
+        monitoredApps = monitoredApps.filter { $0 != app }
         saveSelectedApps()
 
         if statusBars.count == 0 {
-            createNewInstance()
+            showConfigWindow()
         }
     }
 
-    static func createNewInstanceIfNecessary() {
-        if let unAssignedMonitor = (statusBars.first {
-            $0.monitoredApp == nil
-        }) {
-            unAssignedMonitor.showPopover()
-        } else {
-            createNewInstance()
-        }
+    func showConfigWindow() {
+        configWindow.isReleasedWhenClosed = false
+        configWindow.title = NSLocalizedString("Doll - badge watcher", comment: "")
+        configWindow.isOpaque = true
+        configWindow.contentViewController = NSHostingController(rootView: ConfigView())
+        configWindow.setContentSize(defaultWindowSize)
+        configWindow.center()
+        NSApp.activate(ignoringOtherApps: true)
+        configWindow.makeKeyAndOrderFront(nil)
+        configWindow.orderFrontRegardless()
     }
 
-    static func createNewInstance() {
-        let newStatusBar = createNewStatusBar()
-
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.5) {
-            newStatusBar.showPopover()
-        }
-    }
-
-    private static func saveSelectedApps() {
-        let data = statusBars.compactMap {
-                    $0.monitoredApp?.bundleId
+    private func saveSelectedApps() {
+        let data = monitoredApps.map {
+                    $0.bundleId
                 }
                 .joined(separator: ",")
         UserDefaults.standard.set(data, forKey: SETTING_MONITORED_APP_IDS)
         UserDefaults.standard.synchronize()
     }
 
-    private static func createNewStatusBar() -> StatusBarController {
-        let popover = NSPopover()
-        popover.contentSize = NSSize(width: 600, height: 500)
-        popover.behavior = .transient
-
-        let newStatusBar = StatusBarController(popover)
-        statusBars.append(newStatusBar)
-
-        let contentView = ContentView(statusBar: newStatusBar)
-        popover.contentViewController = NSHostingController(rootView: contentView)
+    private func createNewStatusBar() -> StatusBarController {
+        let newStatusBar = StatusBarController()
 
         return newStatusBar
     }
 }
 
-class MonitoredApp: Equatable {
+class MonitoredApp: Equatable, Identifiable {
+    var id: String { UUID().uuidString }
     let bundleId: String
     let appName: String
 

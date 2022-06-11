@@ -1,11 +1,9 @@
 "Select an app to monitor it's badge" = "􀊫 Select an app to monitor it's badge";
-"Monitored app: " = "Monitored app: ";
 "About" = "About";
 "Stop monitor" = "Stop monitor";
 "Quit" = "Quit";
-"Close" = "Close";
-"Create new monitor" = "Create new monitor";
 "Launch at login" = "Launch at login";
+"Hide icon when there's no new notifications" = "Hide icon when there's no new notifications";
 "Show notification on full screen mode" = "Show notification even when menu bar hided";
 
 "About Doll" = "About Doll";
@@ -15,3 +13,8 @@
 
 "About author" = "Made by **bbyigeawucheckin**";
 "How it works?" = "How it works?";
+
+"Doll - badge watcher" = "Doll - badge watcher";
+"Open System Preferences" = "Open System Preferences";
+"OK" = "OK";
+"Permission grant guideline" = "Please go to \nSystem Preferences -> Security & Privacy -> Privacy -> Accessibility\nadd Doll to the list so it can monitor badge updates.";

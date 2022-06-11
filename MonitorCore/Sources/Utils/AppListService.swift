@@ -9,18 +9,22 @@ public struct AppInfo {
 }
 
 public class AppListService {
+    private var setupFinished = false
     var query = NSMetadataQuery()
 
     @Published public var listOfInstalledApplication: [AppInfo] = []
 
-    public init() {
-    }
+    public static var shared = AppListService()
 
     public func setup() {
-        let predicate = NSPredicate(format: "kMDItemContentType == 'com.apple.application-bundle'")
-        NotificationCenter.default.addObserver(self, selector: #selector(queryDidFinish(_:)), name: NSNotification.Name.NSMetadataQueryDidFinishGathering, object: query)
-        query.predicate = predicate
-        query.start()
+        if !setupFinished {
+            let predicate = NSPredicate(format: "kMDItemContentType == 'com.apple.application-bundle'")
+            NotificationCenter.default.addObserver(self, selector: #selector(queryDidFinish(_:)), name: NSNotification.Name.NSMetadataQueryDidFinishGathering, object: query)
+            query.predicate = predicate
+            query.start()
+
+            setupFinished = true
+        }
     }
 
     @objc private func queryDidFinish(_ notification: NSNotification) {
@@ -53,5 +57,7 @@ public class AppListService {
         listOfInstalledApplication = appListDict.map {
             $0.value
         }
+
+        query.stop()
     }
 }

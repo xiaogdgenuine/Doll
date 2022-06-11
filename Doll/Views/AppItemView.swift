@@ -33,25 +33,6 @@ struct AppItemView: View {
                     .onTapGesture {
                         activeAppItem = item
                     }.background((hovered ? Color.gray : selected ? Color.blue : Color.clear).opacity(0.3))
-            
-                
-            if showObserveNewAppBtn {
-                VStack {
-                    HStack {
-                        Spacer()
-                        Button {
-                            MonitorEngine.monitor(app: MonitoredApp(item.bundleId, appName: item.localizedName))
-                        } label: {
-                            Image(systemName: "plus.square.fill")
-                                    .resizable()
-                                    .frame(width: 16, height: 16)
-                        }
-                                .buttonStyle(.plain)
-                                .help("Create new monitor")
-                    }.padding(EdgeInsets(top: 8, leading: 0, bottom: 0, trailing: 8))
-                    Spacer()
-                }
-            }
         }
     }
 }

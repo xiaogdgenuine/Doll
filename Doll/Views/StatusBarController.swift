@@ -6,24 +6,24 @@ let iconSize: CGFloat = 20
 let defaultIcon = #imageLiteral(resourceName: "DefaultStatusBarIcon")
 
 class StatusBarController {
-    private var statusBar: NSStatusBar
-    private var statusItem: NSStatusItem
-    private var mainPopover: NSPopover
+    private var statusBar: NSStatusBar!
+    private var statusItem: NSStatusItem!
 
     public var monitoredApp: MonitoredApp?
 
-    init(_ popover: NSPopover) {
-        self.mainPopover = popover
+    init() {
+        setupStatusBar()
+    }
+
+    func setupStatusBar(icon: NSImage? = nil) {
         statusBar = .system
         statusItem = statusBar.statusItem(withLength: iconSize)
-
         if let statusBarButton = statusItem.button {
             statusBarButton.sendAction(on: [.leftMouseUp, .rightMouseUp])
-            statusBarButton.image = defaultIcon
+            statusBarButton.image = icon ?? defaultIcon
             statusBarButton.image?.size = NSSize(width: iconSize, height: iconSize)
             statusBarButton.image?.isTemplate = false
             statusBarButton.imagePosition = .imageLeft
-
             statusBarButton.action = #selector(onIconClicked(sender:))
             statusBarButton.target = self
             statusBarButton.toolTip = NSLocalizedString("Hold option key ⌥ and click to config", comment: "")
@@ -42,11 +42,7 @@ class StatusBarController {
         let isRightClick = NSApp.currentEvent?.isRightClick == true
 
         if noAppSelected || isOptionKeyHolding || isRightClick {
-            if (mainPopover.isShown) {
-                hidePopover()
-            } else {
-                showPopover()
-            }
+            MonitorEngine.shared.showConfigWindow()
         } else if let monitoredAppName = monitoredApp?.appName,
                   let monitoredAppBundleId = monitoredApp?.bundleId {
             if !appRunning {
@@ -81,22 +77,31 @@ class StatusBarController {
         hidePopover()
 
         MonitorService.observe(appName: appName) { [weak self] badge in
-            self?.updateBadgeText(badge)
+            if AppSettings.hideWhenNothingComing && (badge.isNil || badge?.isEmpty == true) {
+                self?.hideStatusBar()
+            } else {
+                self?.updateBadgeText(badge)
+            }
         }
     }
 
     func showPopover(popover: NSPopover? = nil) {
         if let statusBarButton = statusItem.button {
-            (popover ?? mainPopover)
-                    .show(relativeTo: statusBarButton.bounds, of: statusBarButton, preferredEdge: .maxY)
+            popover?.show(relativeTo: statusBarButton.bounds, of: statusBarButton, preferredEdge: .maxY)
         }
     }
 
     func hidePopover(popover: NSPopover? = nil) {
-        (popover ?? mainPopover).performClose(nil)
+        popover?.performClose(nil)
+    }
+
+    func hideStatusBar() {
+        statusItem.isVisible = false
     }
 
     func updateBadgeText(_ text: String?) {
+        statusItem.isVisible = true
+
         guard statusItem.button?.title != text else {
             return
         }
@@ -134,7 +139,7 @@ class StatusBarController {
     func destroy() {
         if let monitoredApp = monitoredApp {
             MonitorService.unObserve(appName: monitoredApp.appName)
-            MonitorEngine.unMonitor(app: monitoredApp)
+            MonitorEngine.shared.unMonitor(app: monitoredApp)
             statusBar.removeStatusItem(statusItem)
         }
     }

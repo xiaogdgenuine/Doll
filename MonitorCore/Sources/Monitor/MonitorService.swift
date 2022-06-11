@@ -1,8 +1,10 @@
 import AppKit
+import Combine
 
 let checkInterval: TimeInterval = 1.0
 
 public struct MonitorService {
+    public static let observerStatus = PassthroughSubject<Bool, Never>()
     private static var observedAppInfos: [String: ObservedAppInfo] = [:]
     private static var timer: Timer?
     private static var allObserversConfigured = false
@@ -26,24 +28,25 @@ public struct MonitorService {
         }
     }
 
-    public static func observe(appName: String, onUpdate: @escaping (String?) -> Void) {
-        observedAppInfos[appName] = ObservedAppInfo(appElement: tryGetTargetAppElement(appName: appName), onBadgeUpdate: onUpdate)
+    public static func setupObservers() {
+        timer = Timer.scheduledTimer(withTimeInterval: checkInterval, repeats: true) { timer in
+            if appCreateObserver == nil || appDestroyObserver == nil {
+                setupAxObserversOnDock()
+            }
 
-        if timer == nil {
-            timer = Timer.scheduledTimer(withTimeInterval: checkInterval, repeats: true) { timer in
-                if appCreateObserver == nil || appDestroyObserver == nil {
-                    setupAxObserversOnDock()
-                }
-
-                observedAppInfos.keys.forEach { appName in
-                    observedAppInfos[appName]?.onBadgeUpdate(getBadgeText(appName: appName))
-                }
+            observedAppInfos.keys.forEach { appName in
+                observedAppInfos[appName]?.onBadgeUpdate(getBadgeText(appName: appName))
             }
         }
         timer?.fire()
     }
 
+    public static func observe(appName: String, onUpdate: @escaping (String?) -> Void) {
+        observedAppInfos[appName] = ObservedAppInfo(appElement: tryGetTargetAppElement(appName: appName), onBadgeUpdate: onUpdate)
+    }
+
     public static func unObserve(appName: String) {
+        print("Un observe \(appName)")
         observedAppInfos.removeValue(forKey: appName)
     }
 
@@ -169,6 +172,7 @@ public struct MonitorService {
             CFRunLoopAddSource(RunLoop.current.getCFRunLoop(), AXObserverGetRunLoopSource(observer), CFRunLoopMode.defaultMode)
         }
 
+        observerStatus.send(appCreateObserver != nil)
         if appCreateObserver != nil && appDestroyObserver != nil {
             reloadAppElements()
         }
