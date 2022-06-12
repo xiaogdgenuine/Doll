@@ -30,6 +30,7 @@
 		B0CC3C83285393B0006F6361 /* MonitorConfigView.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CC3C82285393B0006F6361 /* MonitorConfigView.swift */; };
 		B0CC3C862854745B006F6361 /* Introspect in Frameworks */ = {isa = PBXBuildFile; productRef = B0CC3C852854745B006F6361 /* Introspect */; };
 		B0CC3C8828547594006F6361 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CC3C8728547594006F6361 /* Utils.swift */; };
+		B0CC3C9128556203006F6361 /* NSImageExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = B0CC3C9028556203006F6361 /* NSImageExtensions.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -58,6 +59,7 @@
 		B09C303A285380DC004CC54F /* ConfigView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ConfigView.swift; sourceTree = "<group>"; };
 		B0CC3C82285393B0006F6361 /* MonitorConfigView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitorConfigView.swift; sourceTree = "<group>"; };
 		B0CC3C8728547594006F6361 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
+		B0CC3C9028556203006F6361 /* NSImageExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NSImageExtensions.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -134,6 +136,7 @@
 				3A05F135761A1F95B691AC9F /* UserDefaultSettings.swift */,
 				3A05FE1708B1B3E267E75950 /* NSEventExtensions.swift */,
 				B0CC3C8728547594006F6361 /* Utils.swift */,
+				B0CC3C9028556203006F6361 /* NSImageExtensions.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -268,6 +271,7 @@
 				89CB807F27A312F10065CA70 /* StatusBarController.swift in Sources */,
 				B0CC3C8828547594006F6361 /* Utils.swift in Sources */,
 				3A05FCF2E46CD3CFEAB29839 /* NotificationView.swift in Sources */,
+				B0CC3C9128556203006F6361 /* NSImageExtensions.swift in Sources */,
 				B0CC3C83285393B0006F6361 /* MonitorConfigView.swift in Sources */,
 				3A05F319D3B6EACC3882AF88 /* UserDefaultSettings.swift in Sources */,
 				3A05FBC07A5CF3CCC2701FBC /* AppSettings.swift in Sources */,

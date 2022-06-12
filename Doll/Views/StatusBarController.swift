@@ -2,14 +2,20 @@ import AppKit
 import Monitor
 import SwiftUI
 
-let iconSize: CGFloat = 20
+let defaultIconSize: CGFloat = 20
+let iconSizeWithBadge: CGFloat = 30
 let defaultIcon = #imageLiteral(resourceName: "DefaultStatusBarIcon")
 
 class StatusBarController {
     private var statusBar: NSStatusBar!
     private var statusItem: NSStatusItem!
+    private var latestBadgeText = ""
 
     public var monitoredApp: MonitoredApp?
+
+    private var iconSize: CGFloat {
+        AppSettings.showAsRedBadge ? iconSizeWithBadge : defaultIconSize
+    }
 
     init() {
         setupStatusBar()
@@ -73,7 +79,8 @@ class StatusBarController {
 
         statusItem.autosaveName = "Doll_\(app.bundleId)"
         updateBadgeText(nil)
-        updateBadgeIcon(icon: NSWorkspace.shared.icon(forFile: appFullPath))
+        let originIcon = NSWorkspace.shared.icon(forFile: appFullPath)
+        updateBadgeIcon(icon: AppSettings.showAsRedBadge ? originIcon.addBadgeToImage(drawText: "") : originIcon)
         hidePopover()
 
         MonitorService.observe(appName: appName) { [weak self] badge in
@@ -99,10 +106,10 @@ class StatusBarController {
         statusItem.isVisible = false
     }
 
-    func updateBadgeText(_ text: String?) {
+    func updateBadgeText(_ text: String?, force: Bool = false) {
         statusItem.isVisible = true
 
-        guard statusItem.button?.title != text else {
+        guard force || statusItem.button?.title != text else {
             return
         }
 
@@ -118,7 +125,22 @@ class StatusBarController {
             tryShowTheNewNotificationPopover(newText: newText)
         }
 
-        statusItem.button?.title = newText
+        let originIcon = NSWorkspace.shared.icon(forFile: NSWorkspace.shared.urlForApplication(withBundleIdentifier: monitoredApp?.bundleId ?? "")?.absoluteURL.path ?? "")
+
+        if AppSettings.showAsRedBadge {
+            updateBadgeIcon(icon: originIcon.addBadgeToImage(drawText: newText))
+            statusItem.length = iconSize
+            statusItem.button?.title = ""
+        } else {
+            statusItem.length = iconSize + textWidth
+            updateBadgeIcon(icon: originIcon)
+            statusItem.button?.title = newText
+        }
+        latestBadgeText = newText
+    }
+
+    func refreshDisplayMode() {
+        updateBadgeText(latestBadgeText, force: true)
     }
 
     func updateBadgeIcon(icon: NSImage) {
