@@ -18,8 +18,7 @@ struct AboutView: View {
                 }
 
                 Text("Tip me")
-                Image("WeChatTipQRCode").resizable().frame(width: 300, height: 300)
-
+                Text("https://www.buymeacoffee.com/xiaogd")
             }.padding()
         }.frame(maxHeight: .infinity)
     }
