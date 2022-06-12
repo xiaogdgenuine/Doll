@@ -18,7 +18,22 @@ struct AboutView: View {
                 }
 
                 Text("Tip me")
-                Text("https://www.buymeacoffee.com/xiaogd")
+                HStack {
+                    Image(systemName: "cup.and.saucer")
+                        .resizable()
+                        .foregroundColor(.black)
+                        .frame(width: 32, height: 32)
+                    Text("Buy me a coffee")
+                        .foregroundColor(.black)
+                }
+                .contentShape(Rectangle())
+                .padding()
+                .padding(.horizontal, 24)
+                .background(Color.yellow)
+                .cornerRadius(12)
+                .onTapGesture {
+                    NSWorkspace.shared.open(URL(string: "https://www.buymeacoffee.com/xiaogd")!)
+                }
             }.padding()
         }.frame(maxHeight: .infinity)
     }
