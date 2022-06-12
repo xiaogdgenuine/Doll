@@ -26,7 +26,7 @@ struct ConfigView: View {
         NavigationView {
             VStack {
                 if items.isEmpty {
-                    Text("No app is monitoring, click \"+\" to add one.")
+                    Text("Add monitor guideline")
                         .font(.title)
                         .padding()
                         .frame(minWidth: 250)

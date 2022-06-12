@@ -18,3 +18,4 @@
 "Open System Preferences" = "Open System Preferences";
 "OK" = "OK";
 "Permission grant guideline" = "Please go to \nSystem Preferences -> Security & Privacy -> Privacy -> Accessibility\nadd Doll to the list so it can monitor badge updates.";
+"Add monitor guideline" = "No app is monitoring, click \"+\" to add one.";

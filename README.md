@@ -26,9 +26,11 @@ You can download the latest dmg file from [here](https://github.com/xiaogdgenuin
 Minimum system requirement: **_macOS 11.0_** (Big Sur)
 
 # How to use?
-It's simple, first you search and select the app you want to monitor:
+It's simple, click on "+" button at the left bottom corner, search and select the app you want to monitor:
 
-![Basic usage](./Doll/Docs/Images/usage-1.png)
+![Add monitor](./Doll/Docs/Images/usage-0.png)
+
+![Search and select](./Doll/Docs/Images/search-and-select.png)
 
 Then Doll will ask for your permission to use the Accessibility API: 
 
@@ -43,15 +45,14 @@ Doll now will monitor all the badge update in the Dock, and sync the numbers int
 
 ![running.png](./Doll/Docs/Images/running.png)
 
-# I want to monitor more apps!
-You get it for free!
+Doll also can show new notification as red badge, just like in dock!
 
-![multiple.png](./Doll/Docs/Images/multiple.png)
+![show as badge](./Doll/Docs/Images/show-as-badge.png)
 
-# I want to change the Monitor app
+# I want to change the Monitor apps
 If the monitored app is running, click on the menu bar icon will simply open that app.
 
-But if you want to change stuffs, just hold the "**_Option key(⌥)_**" and click on the icon.
+But if you want to change stuffs, use right click, or left click while holding the "**_Option key(⌥)_**".
 
 ![config.png](./Doll/Docs/Images/config.png)
 
