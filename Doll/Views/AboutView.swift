@@ -9,7 +9,6 @@ struct AboutView: View {
             VStack(spacing: 32) {
                 Text("About Doll")
                         .font(.title)
-                Text("About author")
                 Text("Icon from [Darius Dan - Flaticon](https://www.flaticon.com/free-icons/reminder)")
 
                 HStack {

@@ -110,7 +110,6 @@ public struct MonitorService {
         if case .success = err {
             var subElements: CFArray?;
             err = AXUIElementCopyAttributeValues(root, "AXChildren" as CFString, 0, childrenCount, &subElements)
-
             if case .success = err {
                 if let children = subElements as? [AXUIElement] {
                     result.append(contentsOf: children)
