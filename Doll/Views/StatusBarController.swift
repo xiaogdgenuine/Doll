@@ -3,7 +3,6 @@ import Monitor
 import SwiftUI
 
 let defaultIconSize: CGFloat = 20
-let iconSizeWithBadge: CGFloat = 30
 let defaultIcon = #imageLiteral(resourceName: "DefaultStatusBarIcon")
 
 class StatusBarController {
@@ -11,11 +10,12 @@ class StatusBarController {
     private var statusItem: NSStatusItem!
     private var latestBadgeText = ""
 
-    public var monitoredApp: MonitoredApp?
-
-    private var iconSize: CGFloat {
-        AppSettings.showAsRedBadge ? iconSizeWithBadge : defaultIconSize
+    public var monitoredApp: MonitoredApp? {
+        didSet {
+            monitoredAppIcon = NSWorkspace.shared.icon(forFile: NSWorkspace.shared.urlForApplication(withBundleIdentifier: monitoredApp?.bundleId ?? "")?.absoluteURL.path ?? "")
+        }
     }
+    private var monitoredAppIcon: NSImage?
 
     init() {
         setupStatusBar()
@@ -23,11 +23,11 @@ class StatusBarController {
 
     func setupStatusBar(icon: NSImage? = nil) {
         statusBar = .system
-        statusItem = statusBar.statusItem(withLength: iconSize)
+        statusItem = statusBar.statusItem(withLength: defaultIconSize)
         if let statusBarButton = statusItem.button {
             statusBarButton.sendAction(on: [.leftMouseUp, .rightMouseUp])
             statusBarButton.image = icon ?? defaultIcon
-            statusBarButton.image?.size = NSSize(width: iconSize, height: iconSize)
+            statusBarButton.image?.size = NSSize(width: defaultIconSize, height: defaultIconSize)
             statusBarButton.image?.isTemplate = false
             statusBarButton.imagePosition = .imageLeft
             statusBarButton.action = #selector(onIconClicked(sender:))
@@ -79,8 +79,15 @@ class StatusBarController {
 
         statusItem.autosaveName = "Doll_\(app.bundleId)"
         updateBadgeText(nil)
-        let originIcon = NSWorkspace.shared.icon(forFile: appFullPath)
-        updateBadgeIcon(icon: AppSettings.showAsRedBadge ? originIcon.addBadgeToImage(drawText: "") : originIcon)
+        
+        guard let monitoredAppIcon = monitoredAppIcon else {
+            return
+        }
+        if AppSettings.showAsRedBadge {
+            updateBadgeIcon(icon: monitoredAppIcon.addBadgeToImage(drawText: ""))
+        } else {
+            updateBadgeIcon(icon: monitoredAppIcon, size: CGSize(width: defaultIconSize, height: defaultIconSize))
+        }
         hidePopover()
 
         MonitorService.observe(appName: appName) { [weak self] badge in
@@ -114,8 +121,8 @@ class StatusBarController {
         }
 
         let textWidth = (text ?? "")
-                .width(withConstrainedHeight: iconSize, font: .systemFont(ofSize: 14))
-        statusItem.length = iconSize + textWidth
+                .width(withConstrainedHeight: defaultIconSize, font: .systemFont(ofSize: 14))
+        statusItem.length = defaultIconSize + textWidth
 
         // New notification comes in
         let oldText = statusItem.button?.title ?? ""
@@ -124,16 +131,18 @@ class StatusBarController {
         if AppSettings.showAlertInFullScreenMode && !newText.isEmpty && oldText != newText {
             tryShowTheNewNotificationPopover(newText: newText)
         }
-
-        let originIcon = NSWorkspace.shared.icon(forFile: NSWorkspace.shared.urlForApplication(withBundleIdentifier: monitoredApp?.bundleId ?? "")?.absoluteURL.path ?? "")
-
+        
+        guard let monitoredAppIcon = monitoredAppIcon else {
+            return
+        }
+        
         if AppSettings.showAsRedBadge {
-            updateBadgeIcon(icon: originIcon.addBadgeToImage(drawText: newText))
-            statusItem.length = iconSize
+            updateBadgeIcon(icon: monitoredAppIcon.addBadgeToImage(drawText: newText))
+            statusItem.length = defaultIconSize
             statusItem.button?.title = ""
         } else {
-            statusItem.length = iconSize + textWidth
-            updateBadgeIcon(icon: originIcon)
+            statusItem.length = defaultIconSize + textWidth
+            updateBadgeIcon(icon: monitoredAppIcon, size: CGSize(width: defaultIconSize, height: defaultIconSize))
             statusItem.button?.title = newText
         }
         latestBadgeText = newText
@@ -143,9 +152,9 @@ class StatusBarController {
         updateBadgeText(latestBadgeText, force: true)
     }
 
-    func updateBadgeIcon(icon: NSImage) {
+    func updateBadgeIcon(icon: NSImage, size: CGSize? = nil) {
         statusItem.button?.image = icon
-        statusItem.button?.image?.size = NSSize(width: iconSize, height: iconSize)
+        statusItem.button?.image?.size = size ?? icon.size
     }
 
     func tryShowTheNewNotificationPopover(newText: String) {
@@ -169,10 +178,10 @@ class StatusBarController {
     private func createNotificationPopover(newText: String) -> NSPopover {
         let notificationPopover = NSPopover()
         let textWidth = newText
-                .width(withConstrainedHeight: iconSize, font: .systemFont(ofSize: 14))
+                .width(withConstrainedHeight: defaultIconSize, font: .systemFont(ofSize: 14))
         let horizonPadding: CGFloat = 32
         let verticalPadding: CGFloat = 16
-        notificationPopover.contentSize = NSSize(width: iconSize + textWidth + horizonPadding, height: iconSize + verticalPadding)
+        notificationPopover.contentSize = NSSize(width: defaultIconSize + textWidth + horizonPadding, height: defaultIconSize + verticalPadding)
         notificationPopover.behavior = .transient
         notificationPopover.setValue(true, forKeyPath: "shouldHideAnchor")
 
@@ -183,12 +192,11 @@ class StatusBarController {
             // Calculate the extra padding in order to make sure popover content fully displayed
             let buttonRect = statusBarButton.convert(statusBarButton.bounds, to: nil)
             let buttonOrigin = statusBarWindow.convertPoint(toScreen: NSPoint(x: buttonRect.minX, y: buttonRect.minY))
-            extraVerticalPadding = max(buttonOrigin.y - activeScreenSize.height - statusBarButton.bounds.height + 8, 0)
+            extraVerticalPadding = min(max(buttonOrigin.y - activeScreenSize.height - statusBarButton.bounds.height + 8, 0), NSApplication.shared.mainMenu!.menuBarHeight + 8)
         }
 
-
         let targetApp = monitoredApp
-        let view = NotificationView(icon: statusItem.button?.image, badgeText: newText, extraVerticalPadding: extraVerticalPadding) {
+        let view = NotificationView(icon: monitoredAppIcon ?? defaultIcon, badgeText: newText, extraVerticalPadding: extraVerticalPadding) {
             if let monitoredAppName = targetApp?.appName {
                 MonitorService.openMonitoredApp(appName: monitoredAppName)
             }

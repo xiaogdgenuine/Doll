@@ -55,7 +55,7 @@ struct MonitorConfigView: View {
 
             VStack {
 
-                VStack(alignment: .leading, spacing: 12) {
+                HStack {
                     TextField("", text: keywordBinding)
                             .placeholder(when: keyword.isEmpty) {
                                 Text("Select an app to monitor it's badge")
@@ -74,6 +74,10 @@ struct MonitorConfigView: View {
                                     $0.becomeFirstResponder()
                                 }
                             }
+                    
+                    Button("Pick") {
+                        pickApplication()
+                    }
                 }
                         .padding()
 
@@ -126,6 +130,31 @@ struct MonitorConfigView: View {
         let key = keyword.lowercased()
         filteredAppItems = allAppItems.filter { item in
             key.isEmpty || item.localizedName.lowercased().contains(key)
+        }
+    }
+    
+    private func pickApplication() {
+        let panel = NSOpenPanel()
+        panel.allowedContentTypes = [.application]
+        panel.allowsMultipleSelection = false
+        panel.canChooseFiles = true
+        panel.canChooseDirectories = false
+        if panel.runModal() == .OK, let appURL = panel.url {
+            guard let appBundle = Bundle(url: appURL),
+                  let appName = (appBundle.infoDictionary?["CFBundleDisplayName"] ?? appBundle.infoDictionary?["CFBundleName"]) as? String else {
+                return
+            }
+            if let previousMonitoredAppName = selectedApp?.appName, !isAddMode {
+                MonitorService.unObserve(appName: previousMonitoredAppName)
+            }
+
+            let newMonitoredApp = MonitoredApp(appBundle.bundleIdentifier ?? "", appName: appName)
+            MonitorEngine.shared.monitor(newApp: newMonitoredApp, at: itemIndex, statusBar: statusBar)
+
+            if selectedApp == nil {
+                statusBar = MonitorEngine.shared.statusBars.last
+            }
+            selectedApp = newMonitoredApp
         }
     }
 }

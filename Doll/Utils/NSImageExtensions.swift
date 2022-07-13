@@ -11,12 +11,13 @@ import Foundation
 extension NSImage {
 
     func addBadgeToImage(drawText text: String) -> NSImage {
-        let canvasWidth = self.size.width + 8
-        let canvasHeight = self.size.height
+        let containerHeight = min(NSApplication.shared.mainMenu?.menuBarHeight ?? self.size.height, self.size.height)
+        let canvasWidth = defaultIconSize
+        let canvasHeight = defaultIconSize
         let canvasSize = NSSize(width: canvasWidth, height: canvasHeight)
-        let targetImage = NSImage(size: NSSize(width: canvasWidth, height: canvasHeight), flipped: false) { (dstRect: CGRect) -> Bool in
-
-            self.draw(in: CGRect(origin: dstRect.origin.applying(.init(translationX: 6, y: 4)), size: NSSize(width: self.size.width - 6, height: self.size.height - 10)))
+        let targetImage = NSImage(size: canvasSize, flipped: false) { (dstRect: CGRect) -> Bool in
+            let iconSize = text.isEmpty ? defaultIconSize : defaultIconSize - 2
+            self.draw(in: CGRect(origin: .zero, size: NSSize(width: iconSize, height: iconSize)))
 
             guard !text.isEmpty else {
                 return true
@@ -24,9 +25,9 @@ extension NSImage {
 
             let textColor = NSColor.white
             let finalText = text.count > 2 ? "99." : text
-            let badgePaddingHorizental: CGFloat = text.count > 1 ? 8 : 12
-            let badgePaddingVertical: CGFloat = text.count > 1 ? 5 : 9
-            let textFont = NSFont.systemFont(ofSize: finalText.count > 2 ? 9 : 10)
+            let badgePaddingHorizental: CGFloat = 8
+            let badgePaddingVertical: CGFloat = text.count == 1 ? 5 : text.count == 2 ? 8 : 9
+            let textFont = NSFont.systemFont(ofSize: finalText.count > 2 ? 6 : 8)
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.alignment = NSTextAlignment.center
 
@@ -36,7 +37,7 @@ extension NSImage {
                 ] as [NSAttributedString.Key : Any]
 
             let textRenderSize = (finalText as NSString).size(withAttributes: textFontAttributes)
-            let badgeBackgroundSize = NSSize(width: textRenderSize.width + badgePaddingHorizental, height: textRenderSize.width + badgePaddingVertical)
+            let badgeBackgroundSize = NSSize(width: textRenderSize.width + badgePaddingHorizental, height: textRenderSize.height + badgePaddingVertical)
             let badgeFillColor = NSColor.red.withAlphaComponent(0.85)
             let badgeBackgroundRect = CGRect(origin: CGPoint(x: canvasWidth - badgeBackgroundSize.width, y: canvasHeight - badgeBackgroundSize.height), size: badgeBackgroundSize)
             let badgeBackgroundPath = NSBezierPath(ovalIn: badgeBackgroundRect)
