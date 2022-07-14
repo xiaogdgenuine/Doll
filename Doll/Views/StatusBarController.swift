@@ -216,19 +216,33 @@ extension StatusBarController {
         let appElement = AXUIElementCreateApplication(frontmostPid)
         var frontmostWindow: AnyObject?
         var activeWindowSize: AnyObject?
+        var activeWindowRole: AnyObject?
         AXUIElementCopyAttributeValue(appElement, kAXFocusedWindowAttribute as CFString, &frontmostWindow)
 
         if frontmostWindow != nil {
             let activeWindow = frontmostWindow as! AXUIElement
+
+            AXUIElementCopyAttributeValue(
+                    activeWindow, kAXRoleAttribute as CFString, &activeWindowRole
+            )
+
+            if let windowRole = activeWindowRole as? String, windowRole == "AXScrollArea" {
+                // Desktop window will return AXScrollArea role, it doesn't count, as Desktop always in fullscreen mode
+                return false
+            }
+
             AXUIElementCopyAttributeValue(
                     activeWindow, kAXSizeAttribute as CFString, &activeWindowSize
-            );
+            )
 
             if activeWindowSize != nil,
                let activeScreen = NSScreen.getScreenWithMouse() {
                 var windowSize = CGSize()
                 AXValueGetValue(activeWindowSize as! AXValue, .cgSize, &windowSize)
-                return windowSize == activeScreen.frame.size
+
+                // Second case is for new mac with notched menubar
+                return windowSize.height == activeScreen.frame.size.height ||
+                windowSize.height == activeScreen.frame.size.height - (NSApplication.shared.mainMenu?.menuBarHeight ?? 0)
             }
         }
 
