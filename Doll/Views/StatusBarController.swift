@@ -102,6 +102,11 @@ class StatusBarController {
     func showPopover(popover: NSPopover? = nil) {
         if let statusBarButton = statusItem.button {
             popover?.show(relativeTo: statusBarButton.bounds, of: statusBarButton, preferredEdge: .maxY)
+            if let contentWindow = popover?.contentViewController?.view.window {
+                // A little hack to prevent popover shitup with menubar
+                // https://stackoverflow.com/a/35047661
+                contentWindow.parent?.removeChildWindow(contentWindow)
+            }
         }
     }
 
@@ -125,12 +130,12 @@ class StatusBarController {
         statusItem.length = defaultIconSize + textWidth
 
         // New notification comes in
-        let oldText = statusItem.button?.title ?? ""
         let newText = text ?? ""
 
-        if AppSettings.showAlertInFullScreenMode && !newText.isEmpty && oldText != newText {
+        if AppSettings.showAlertInFullScreenMode && !newText.isEmpty && latestBadgeText != newText {
             tryShowTheNewNotificationPopover(newText: newText)
         }
+        latestBadgeText = newText
         
         guard let monitoredAppIcon = monitoredAppIcon else {
             return
@@ -145,7 +150,6 @@ class StatusBarController {
             updateBadgeIcon(icon: monitoredAppIcon, size: CGSize(width: defaultIconSize, height: defaultIconSize))
             statusItem.button?.title = newText
         }
-        latestBadgeText = newText
     }
 
     func refreshDisplayMode() {
@@ -185,18 +189,8 @@ class StatusBarController {
         notificationPopover.behavior = .transient
         notificationPopover.setValue(true, forKeyPath: "shouldHideAnchor")
 
-        var extraVerticalPadding: CGFloat = 0
-        if let statusBarButton = statusItem.button,
-           let statusBarWindow = statusBarButton.window,
-           let activeScreenSize = (NSScreen.main ?? NSScreen.getScreenWithMouse())?.frame {
-            // Calculate the extra padding in order to make sure popover content fully displayed
-            let buttonRect = statusBarButton.convert(statusBarButton.bounds, to: nil)
-            let buttonOrigin = statusBarWindow.convertPoint(toScreen: NSPoint(x: buttonRect.minX, y: buttonRect.minY))
-            extraVerticalPadding = min(max(buttonOrigin.y - activeScreenSize.height - statusBarButton.bounds.height + 8, 0), NSApplication.shared.mainMenu!.menuBarHeight + 8)
-        }
-
         let targetApp = monitoredApp
-        let view = NotificationView(icon: monitoredAppIcon ?? defaultIcon, badgeText: newText, extraVerticalPadding: extraVerticalPadding) {
+        let view = NotificationView(icon: monitoredAppIcon ?? defaultIcon, badgeText: newText) {
             if let monitoredAppName = targetApp?.appName {
                 MonitorService.openMonitoredApp(appName: monitoredAppName)
             }

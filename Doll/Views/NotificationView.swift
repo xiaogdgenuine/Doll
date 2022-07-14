@@ -6,7 +6,6 @@ import LaunchAtLogin
 struct NotificationView: View {
     let icon: NSImage?
     let badgeText: String
-    let extraVerticalPadding: CGFloat
     let onTap: () -> Void
     var body: some View {
         let iconSize: CGFloat = 20
@@ -20,7 +19,7 @@ struct NotificationView: View {
             Text(badgeText)
                     .fontWeight(.bold)
         }
-                .padding(EdgeInsets(top: 8 + extraVerticalPadding, leading: 8, bottom: 8, trailing: 8))
+                .padding(8)
                 .contentShape(Rectangle())
                 .onTapGesture {
                     onTap()
