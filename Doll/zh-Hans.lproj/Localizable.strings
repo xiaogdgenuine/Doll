@@ -5,6 +5,8 @@
 "Launch at login" = "跟随电脑启动";
 "Hide icon when there's no new notifications" = "没有通知时，隐藏图标";
 "Show notification on full screen mode" = "菜单栏隐藏时也显示通知";
+"Show as red badge" = "将通知显示为红色角标";
+"Show only app icon" = "只显示 App 图标，不显示任何通知";
 
 "About Doll" = "关于 Doll";
 "Tip me" = "喜欢这个 App？那就支持一下吧 :)";

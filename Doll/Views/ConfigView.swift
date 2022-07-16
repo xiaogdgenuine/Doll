@@ -21,6 +21,7 @@ struct ConfigView: View {
     @State private var hideWhenNothingComing = AppSettings.hideWhenNothingComing
     @State private var showAlertInFullScreenMode = AppSettings.showAlertInFullScreenMode
     @State private var showAsRedBadge = AppSettings.showAsRedBadge
+    @State private var showOnlyAppIcon = AppSettings.showOnlyAppIcon
 
     var body: some View {
         NavigationView {
@@ -68,6 +69,13 @@ struct ConfigView: View {
                     Toggle("Show as red badge", isOn: $showAsRedBadge)
                             .onChange(of: showAsRedBadge) { enabled in
                                 AppSettings.showAsRedBadge = enabled
+                                MonitorEngine.shared.statusBars.forEach {
+                                    $0.refreshDisplayMode()
+                                }
+                            }
+                    Toggle("Show only app icon", isOn: $showOnlyAppIcon)
+                            .onChange(of: showOnlyAppIcon) { enabled in
+                                AppSettings.showOnlyAppIcon = enabled
                                 MonitorEngine.shared.statusBars.forEach {
                                     $0.refreshDisplayMode()
                                 }

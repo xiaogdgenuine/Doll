@@ -8,4 +8,7 @@ class AppSettings {
 
     @UserDefaultSetting("SETTINGS_Show_As_Red_Badge")
     static var showAsRedBadge = false
+
+    @UserDefaultSetting("SETTINGS_Show_Only_App_Icon")
+    static var showOnlyAppIcon = false
 }

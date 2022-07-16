@@ -11,7 +11,6 @@ import Foundation
 extension NSImage {
 
     func addBadgeToImage(drawText text: String) -> NSImage {
-        let containerHeight = min(NSApplication.shared.mainMenu?.menuBarHeight ?? self.size.height, self.size.height)
         let canvasWidth = defaultIconSize
         let canvasHeight = defaultIconSize
         let canvasSize = NSSize(width: canvasWidth, height: canvasHeight)

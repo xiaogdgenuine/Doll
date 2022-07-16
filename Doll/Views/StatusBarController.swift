@@ -84,11 +84,10 @@ class StatusBarController {
             return
         }
         if AppSettings.showAsRedBadge {
-            updateBadgeIcon(icon: monitoredAppIcon.addBadgeToImage(drawText: ""))
+            updateBadgeIcon(icon: monitoredAppIcon, size: CGSize(width: defaultIconSize, height: defaultIconSize))
         } else {
             updateBadgeIcon(icon: monitoredAppIcon, size: CGSize(width: defaultIconSize, height: defaultIconSize))
         }
-        hidePopover()
 
         MonitorService.observe(appName: appName) { [weak self] badge in
             if AppSettings.hideWhenNothingComing && (badge.isNil || badge?.isEmpty == true) {
@@ -121,7 +120,7 @@ class StatusBarController {
     func updateBadgeText(_ text: String?, force: Bool = false) {
         statusItem.isVisible = true
 
-        guard force || statusItem.button?.title != text else {
+        guard !AppSettings.showOnlyAppIcon, force || statusItem.button?.title != text else {
             return
         }
 
@@ -153,12 +152,20 @@ class StatusBarController {
     }
 
     func refreshDisplayMode() {
-        updateBadgeText(latestBadgeText, force: true)
+        if AppSettings.showOnlyAppIcon {
+            statusItem.length = defaultIconSize
+            statusItem.button?.title = ""
+            updateBadgeIcon(icon: monitoredAppIcon, size: CGSize(width: defaultIconSize, height: defaultIconSize))
+        } else {
+            updateBadgeText(latestBadgeText, force: true)
+        }
     }
 
-    func updateBadgeIcon(icon: NSImage, size: CGSize? = nil) {
+    func updateBadgeIcon(icon: NSImage?, size: CGSize? = nil) {
         statusItem.button?.image = icon
-        statusItem.button?.image?.size = size ?? icon.size
+        if let iconSize = size ?? icon?.size {
+            statusItem.button?.image?.size = iconSize
+        }
     }
 
     func tryShowTheNewNotificationPopover(newText: String) {
