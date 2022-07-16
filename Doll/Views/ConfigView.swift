@@ -58,21 +58,25 @@ struct ConfigView: View {
                                 Text("Launch at login")
                             }
                             .padding([.top])
-                    Toggle("Hide icon when there's no new notifications", isOn: $hideWhenNothingComing)
-                            .onChange(of: hideWhenNothingComing) { enabled in
-                                AppSettings.hideWhenNothingComing = enabled
-                            }
-                    Toggle("Show notification on full screen mode", isOn: $showAlertInFullScreenMode)
-                            .onChange(of: showAlertInFullScreenMode) { enabled in
-                                AppSettings.showAlertInFullScreenMode = enabled
-                            }
-                    Toggle("Show as red badge", isOn: $showAsRedBadge)
-                            .onChange(of: showAsRedBadge) { enabled in
-                                AppSettings.showAsRedBadge = enabled
-                                MonitorEngine.shared.statusBars.forEach {
-                                    $0.refreshDisplayMode()
+
+                    Group {
+                        Toggle("Hide icon when there's no new notifications", isOn: $hideWhenNothingComing)
+                                .onChange(of: hideWhenNothingComing) { enabled in
+                                    AppSettings.hideWhenNothingComing = enabled
                                 }
-                            }
+                        Toggle("Show notification on full screen mode", isOn: $showAlertInFullScreenMode)
+                                .onChange(of: showAlertInFullScreenMode) { enabled in
+                                    AppSettings.showAlertInFullScreenMode = enabled
+                                }
+                        Toggle("Show as red badge", isOn: $showAsRedBadge)
+                                .onChange(of: showAsRedBadge) { enabled in
+                                    AppSettings.showAsRedBadge = enabled
+                                    MonitorEngine.shared.statusBars.forEach {
+                                        $0.refreshDisplayMode()
+                                    }
+                                }
+                    }.disabled(showOnlyAppIcon)
+                    
                     Toggle("Show only app icon", isOn: $showOnlyAppIcon)
                             .onChange(of: showOnlyAppIcon) { enabled in
                                 AppSettings.showOnlyAppIcon = enabled

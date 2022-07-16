@@ -24,9 +24,7 @@ extension NSImage {
 
             let textColor = NSColor.white
             let finalText = text.count > 2 ? "99." : text
-            let badgePaddingHorizental: CGFloat = 8
-            let badgePaddingVertical: CGFloat = text.count == 1 ? 5 : text.count == 2 ? 8 : 9
-            let textFont = NSFont.systemFont(ofSize: finalText.count > 2 ? 6 : 8)
+            let textFont = NSFont.systemFont(ofSize: 8)
             let paragraphStyle = NSMutableParagraphStyle()
             paragraphStyle.alignment = NSTextAlignment.center
 
@@ -36,8 +34,9 @@ extension NSImage {
                 ] as [NSAttributedString.Key : Any]
 
             let textRenderSize = (finalText as NSString).size(withAttributes: textFontAttributes)
-            let badgeBackgroundSize = NSSize(width: textRenderSize.width + badgePaddingHorizental, height: textRenderSize.height + badgePaddingVertical)
-            let badgeFillColor = NSColor.red.withAlphaComponent(0.85)
+            let maxAxisSizeForText = max(textRenderSize.width, textRenderSize.height)
+            let badgeBackgroundSize = CGSize(width: maxAxisSizeForText + 4, height: maxAxisSizeForText + 4)
+            let badgeFillColor = NSColor.systemRed.withAlphaComponent(0.9)
             let badgeBackgroundRect = CGRect(origin: CGPoint(x: canvasWidth - badgeBackgroundSize.width, y: canvasHeight - badgeBackgroundSize.height), size: badgeBackgroundSize)
             let badgeBackgroundPath = NSBezierPath(ovalIn: badgeBackgroundRect)
             badgeFillColor.setFill()
