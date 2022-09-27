@@ -1,10 +1,10 @@
-"Select an app to monitor it's badge" = "􀊫 Select an app to monitor it's badge";
+"Select an app to monitor its badge" = "􀊫 Select an app to monitor its badge";
 "About" = "About";
 "Stop monitor" = "Stop monitor";
 "Quit" = "Quit";
 "Launch at login" = "Launch at login";
 "Hide icon when there's no new notifications" = "Hide icon when there's no new notifications";
-"Show notification on full screen mode" = "Show notification even when menu bar hided";
+"Show notification on full screen mode" = "Show notification even when menu bar is hidden";
 "Show as red badge" = "Show notification as a red badge";
 "Show only app icon" = "Just show app icon, hide all notifications";
 
