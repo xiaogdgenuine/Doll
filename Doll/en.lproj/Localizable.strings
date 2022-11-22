@@ -3,8 +3,8 @@
 "Stop monitor" = "Stop monitor";
 "Quit" = "Quit";
 "Launch at login" = "Launch at login";
-"Hide icon when there's no new notifications" = "Hide icon when there's no new notifications";
-"Show notification on full screen mode" = "Show notification even when menu bar hided";
+"Hide icon when there's no new notifications" = "Hide icon when there are no new notifications";
+"Show notification on full screen mode" = "Show notification even when the menu bar is hidden";
 "Show as red badge" = "Show notification as a red badge";
 "Show only app icon" = "Just show app icon, hide all notifications";
 
