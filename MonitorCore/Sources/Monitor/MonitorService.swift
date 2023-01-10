@@ -56,15 +56,8 @@ public struct MonitorService {
         }
     }
 
-    public static func isMonitoredAppRunning(appName: String) -> Bool {
-        if let cachedTargetAppElement = observedAppInfos[appName]?.appElement {
-            var title: AnyObject?
-            AXUIElementCopyAttributeValue(cachedTargetAppElement, kAXTitleAttribute as CFString, &title)
-
-            return title as? String != nil
-        }
-
-        return false
+    public static func isMonitoredAppRunning(bundleIdentifier: String) -> Bool {
+        NSWorkspace.shared.runningApplications.contains { $0.bundleIdentifier == bundleIdentifier }
     }
 
     public static func getBadgeText(appName: String) -> String? {

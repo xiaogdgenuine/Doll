@@ -3,10 +3,12 @@
 "Stop monitoring" = "停止观测";
 "Quit" = "退出";
 "Launch at login" = "跟随电脑启动";
-"Hide icons when there are no new notifications" = "没有通知时，隐藏图标";
-"Show notification on full screen mode" = "菜单栏隐藏时也显示通知";
-"Show as red badge" = "将通知显示为红色角标";
+"Hide icon if monitored app isn't running" = "App 没有启动时，隐藏图标";
+"Hide icons when there are no new notifications" = "App 没有通知时，隐藏图标";
+"Show notification on full screen mode" = "菜单栏隐藏时也显示 App 通知";
+"Show as red badge" = "将 App 通知显示为红色角标";
 "Show only app icon" = "只显示 App 图标，不显示任何通知";
+"Hotkey to open this config window" = "配置窗口热键：";
 
 "About Doll" = "关于 Doll";
 "Tip me" = "喜欢这个 App？那就支持一下吧 :)";

@@ -37,12 +37,6 @@ class StatusBarController {
     }
 
     @objc func onIconClicked(sender: AnyObject) {
-        var appRunning = false
-
-        if let monitoredApp = monitoredApp {
-            appRunning = MonitorService.isMonitoredAppRunning(appName: monitoredApp.appName)
-        }
-
         let noAppSelected = statusItem.button?.image == defaultIcon
         let isOptionKeyHolding = NSEvent.modifierFlags.contains(.option)
         let isRightClick = NSApp.currentEvent?.isRightClick == true
@@ -51,6 +45,7 @@ class StatusBarController {
             MonitorEngine.shared.showConfigWindow()
         } else if let monitoredAppName = monitoredApp?.appName,
                   let monitoredAppBundleId = monitoredApp?.bundleId {
+            let appRunning = MonitorService.isMonitoredAppRunning(bundleIdentifier: monitoredAppBundleId)
             if !appRunning {
                 guard let appURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: monitoredAppBundleId) else {
                     return
@@ -96,7 +91,11 @@ class StatusBarController {
         }
 
         MonitorService.observe(appName: appName) { [weak self] badge in
-            if AppSettings.hideWhenNothingComing && (badge.isNil || badge?.isEmpty == true) {
+            let appRunning = MonitorService.isMonitoredAppRunning(bundleIdentifier: targetBundle.bundleIdentifier ?? "")
+            let appIsNotRunningAndIconShouldBeHidden = AppSettings.hideWhenAppNotRunning && !appRunning
+            let badgeIsEmptyAndIconShouldBeHidden = AppSettings.hideWhenNothingComing && (badge.isNil || badge?.isEmpty == true)
+
+            if appIsNotRunningAndIconShouldBeHidden || badgeIsEmptyAndIconShouldBeHidden {
                 self?.hideStatusBar()
             } else {
                 self?.updateBadgeText(badge)

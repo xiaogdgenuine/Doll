@@ -2,7 +2,7 @@ import Foundation
 import SwiftUI
 import Monitor
 
-let defaultWindowSize = NSSize(width: 800, height: 600)
+let defaultWindowSize = NSSize(width: 900, height: 600)
 let SETTING_MONITORED_APP_IDS = "SETTING_MONITORED_APP_IDS"
 
 class MonitorEngine {

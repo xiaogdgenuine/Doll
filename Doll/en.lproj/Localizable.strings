@@ -3,10 +3,12 @@
 "Stop monitoring" = "Stop monitoring";
 "Quit" = "Quit";
 "Launch at login" = "Launch at login";
+"Hide icon if monitored app isn't running" = "Hide icon if monitored app isn't running";
 "Hide icons when there are no new notifications" = "Hide icons when there are no new notifications";
 "Show notification on full screen mode" = "Show notification even when menu bar is hidden";
 "Show as red badge" = "Show notification as a red badge";
 "Show only app icon" = "Just show app icon, hide all notifications";
+"Hotkey to open this config window" = "Hotkey to open this config window:";
 
 "About Doll" = "About Doll";
 "Tip me" = "Buy me a coffee if you love this app! :)";

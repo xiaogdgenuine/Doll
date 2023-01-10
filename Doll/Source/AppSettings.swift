@@ -1,5 +1,8 @@
 
 class AppSettings {
+    @UserDefaultSetting("SETTINGS_Hide_When_App_Not_Running")
+    static var hideWhenAppNotRunning = false
+
     @UserDefaultSetting("SETTINGS_Hide_When_Nothing_Coming")
     static var hideWhenNothingComing = false
 
