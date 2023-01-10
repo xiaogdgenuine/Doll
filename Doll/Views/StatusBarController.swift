@@ -58,7 +58,13 @@ class StatusBarController {
 
                 NSWorkspace.shared.open(appURL)
             } else {
-                MonitorService.openMonitoredApp(appName: monitoredAppName)
+                if NSWorkspace.shared.frontmostApplication?.bundleIdentifier == monitoredAppBundleId {
+                    // Hide the app
+                    NSWorkspace.shared.frontmostApplication?.hide()
+                } else {
+                    // Send the app window to front most
+                    MonitorService.openMonitoredApp(appName: monitoredAppName)
+                }
             }
         }
     }
