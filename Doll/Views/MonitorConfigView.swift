@@ -111,7 +111,7 @@ struct MonitorConfigView: View {
                             statusBar?.destroy()
                             destroyed = true
                         } label: {
-                            Text("Stop monitor") + Text(" - \"\(selectedApp.appName)\"")
+                            Text("Stop monitoring") + Text(" - \"\(selectedApp.appName)\"")
                                 .fontWeight(.bold)
                                 .foregroundColor(.primary)
                         }

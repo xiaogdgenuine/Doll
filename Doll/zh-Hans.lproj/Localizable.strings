@@ -1,9 +1,9 @@
 "Select an app to monitor it's badge" = "􀊫 选择一个应用以便观测它的通知标记";
 "About" = "关于";
-"Stop monitor" = "停止观测";
+"Stop monitoring" = "停止观测";
 "Quit" = "退出";
 "Launch at login" = "跟随电脑启动";
-"Hide icon when there's no new notifications" = "没有通知时，隐藏图标";
+"Hide icons when there are no new notifications" = "没有通知时，隐藏图标";
 "Show notification on full screen mode" = "菜单栏隐藏时也显示通知";
 "Show as red badge" = "将通知显示为红色角标";
 "Show only app icon" = "只显示 App 图标，不显示任何通知";

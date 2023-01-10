@@ -60,7 +60,7 @@ struct ConfigView: View {
                             .padding([.top])
 
                     Group {
-                        Toggle("Hide icon when there's no new notifications", isOn: $hideWhenNothingComing)
+                        Toggle("Hide icons when there are no new notifications", isOn: $hideWhenNothingComing)
                                 .onChange(of: hideWhenNothingComing) { enabled in
                                     AppSettings.hideWhenNothingComing = enabled
                                 }
