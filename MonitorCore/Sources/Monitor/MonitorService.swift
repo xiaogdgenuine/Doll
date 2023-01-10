@@ -57,7 +57,7 @@ public struct MonitorService {
     }
 
     public static func isMonitoredAppRunning(bundleIdentifier: String) -> Bool {
-        NSWorkspace.shared.runningApplications.contains { $0.bundleIdentifier == bundleIdentifier }
+        !NSRunningApplication.runningApplications(withBundleIdentifier: bundleIdentifier).isEmpty
     }
 
     public static func getBadgeText(appName: String) -> String? {
