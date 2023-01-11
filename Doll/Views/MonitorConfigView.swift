@@ -19,6 +19,7 @@ struct MonitorConfigView: View {
     @State var statusBar: StatusBarController?
     @State var selectedApp: MonitoredApp?
     @State var selectedAppItem: AppItem?
+    @State var showGiantBadge: Bool = false
     @State var keyword: String = ""
     @State private var defaultFocusSet = false
     @State private var allAppItems: [AppItem] = []
@@ -104,9 +105,18 @@ struct MonitorConfigView: View {
                         }
 
                 HStack {
-                    Spacer()
 
                     if !isAddMode, let selectedApp = selectedApp {
+                        Toggle("Don't want to miss any message from this app :)", isOn: $showGiantBadge)
+                            .onChange(of: showGiantBadge) { enabled in
+                                AppSettings.toggleGiantBadge(for: selectedApp.appName, value: enabled)
+                            }
+                            .onAppear {
+                                showGiantBadge = AppSettings.isGiantBadgeEnabled(for: selectedApp.appName)
+                            }
+
+                        Spacer()
+
                         Button {
                             statusBar?.destroy()
                             destroyed = true

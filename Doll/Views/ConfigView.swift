@@ -42,12 +42,7 @@ struct ConfigView: View {
                                 }
                                 MonitorConfigView(itemIndex: itemIndex, statusBar: statusBar, selectedApp: item)
                             } label: {
-                                HStack {
-                                    Image(nsImage: Utils.getAppIcon(bundleId: item.bundleId))
-                                        .resizable()
-                                        .frame(width: 20, height: 20)
-                                    Text(item.appName)
-                                }.padding(.vertical, 8)
+                                MonitoredAppItemView(appItem: item)
                             }
                         }
                     }.frame(minWidth: 250)

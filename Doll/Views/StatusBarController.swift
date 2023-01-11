@@ -9,10 +9,17 @@ class StatusBarController {
     private var statusBar: NSStatusBar!
     private var statusItem: NSStatusItem!
     private var latestBadgeText = ""
+    private var latestMessageCount = 0
+
+    private var giantBadgeController = GiantBadgeViewController()
+    private var giantBadgePanel = NSPanel(contentRect: NSRect(origin: .zero, size: defaultWindowSize),
+                              styleMask: [.nonactivatingPanel],
+                              backing: .buffered, defer: false)
+    private var lastTimeShowingGiantBadge = Date()
 
     public var monitoredApp: MonitoredApp? {
         didSet {
-            monitoredAppIcon = NSWorkspace.shared.icon(forFile: NSWorkspace.shared.urlForApplication(withBundleIdentifier: monitoredApp?.bundleId ?? "")?.absoluteURL.path ?? "")
+            refreshIcon()
         }
     }
     private var monitoredAppIcon: NSImage?
@@ -34,9 +41,20 @@ class StatusBarController {
             statusBarButton.target = self
             statusBarButton.toolTip = NSLocalizedString("Hold option key ⌥ and click to config", comment: "")
         }
+
+        giantBadgePanel.isOpaque = false
+        giantBadgePanel.hasShadow = false
+        giantBadgePanel.backgroundColor = NSColor.clear
+    }
+
+    func refreshIcon() {
+        monitoredAppIcon = Storage.appIcon(for: monitoredApp?.bundleId ?? "")
+        updateBadgeText(latestBadgeText, force: true)
     }
 
     @objc func onIconClicked(sender: AnyObject) {
+        hideGiantBadge()
+
         let noAppSelected = statusItem.button?.image == defaultIcon
         let isOptionKeyHolding = NSEvent.modifierFlags.contains(.option)
         let isRightClick = NSApp.currentEvent?.isRightClick == true
@@ -130,16 +148,16 @@ class StatusBarController {
         }
 
         let textWidth = (text ?? "")
-                .width(withConstrainedHeight: defaultIconSize, font: .systemFont(ofSize: 14))
+            .width(withConstrainedHeight: defaultIconSize, font: .systemFont(ofSize: 14))
         statusItem.length = defaultIconSize + textWidth
 
         // New notification comes in
         let newText = text ?? ""
 
-        if AppSettings.showAlertInFullScreenMode && !newText.isEmpty && latestBadgeText != newText {
-            tryShowTheNewNotificationPopover(newText: newText)
+        if newText.isEmpty {
+            hideGiantBadge()
+            hidePopover()
         }
-        latestBadgeText = newText
         
         guard let monitoredAppIcon = monitoredAppIcon else {
             return
@@ -154,6 +172,27 @@ class StatusBarController {
             updateBadgeIcon(icon: monitoredAppIcon, size: CGSize(width: defaultIconSize, height: defaultIconSize))
             statusItem.button?.title = newText
         }
+
+        let newMessageCount = Int(newText) ?? 0
+        if latestBadgeText != newText {
+            if AppSettings.showAlertInFullScreenMode {
+                tryShowTheNewNotificationPopover(newText: newText)
+            }
+
+            if AppSettings.isGiantBadgeEnabled(for: monitoredApp?.appName ?? "") {
+                // Don't show giant badge when message count is decreasing
+                if newMessageCount >= latestMessageCount {
+                    tryShowGiantBadge(text)
+                } else {
+                    hideGiantBadge()
+                }
+            } else {
+                hideGiantBadge()
+            }
+        }
+
+        latestBadgeText = newText
+        latestMessageCount = newMessageCount
     }
 
     func refreshDisplayMode() {
@@ -173,6 +212,37 @@ class StatusBarController {
         }
     }
 
+    func tryShowGiantBadge(_ text: String?) {
+        let now = Date()
+        if !giantBadgePanel.isVisible || now.timeIntervalSince(lastTimeShowingGiantBadge) >= 3 {
+            lastTimeShowingGiantBadge = now
+
+            if giantBadgePanel.contentViewController != nil {
+                giantBadgeController.animationFlag.toggle()
+            } else {
+                let giantBadgeView = GiantBadgeView(controller: giantBadgeController) { [weak self] in
+                    guard let self = self else { return }
+                    self.onIconClicked(sender: self)
+                }
+                giantBadgePanel.contentViewController = NSHostingController(rootView: giantBadgeView)
+                giantBadgePanel.setContentSize(defaultWindowSize)
+            }
+
+            if let frame = NSScreen.main?.frame,
+               let iconFrame = statusItem.button?.window?.frame {
+                let menubarHeight = NSApplication.shared.mainMenu?.menuBarHeight ?? 0
+                giantBadgePanel.setFrameOrigin(NSPoint(x: iconFrame.midX - defaultWindowSize.width / 2, y: frame.height - defaultWindowSize.height / 2 - menubarHeight / 2))
+            }
+            giantBadgePanel.level = .popUpMenu
+            giantBadgePanel.setIsVisible(true)
+            giantBadgePanel.orderFrontRegardless()
+        }
+    }
+
+    func hideGiantBadge() {
+        giantBadgePanel.setIsVisible(false)
+    }
+
     func tryShowTheNewNotificationPopover(newText: String) {
         if currentActiveWindowIsFullScreen() {
             let notificationPopover = createNotificationPopover(newText: newText)
@@ -188,6 +258,7 @@ class StatusBarController {
             MonitorService.unObserve(appName: monitoredApp.appName)
             MonitorEngine.shared.unMonitor(app: monitoredApp)
             statusBar.removeStatusItem(statusItem)
+            AppSettings.toggleGiantBadge(for: monitoredApp.appName, value: false)
         }
     }
 

@@ -3,6 +3,7 @@ import SwiftUI
 @NSApplicationMain
 class AppDelegate: NSObject, NSApplicationDelegate {
     func applicationDidFinishLaunching(_ aNotification: Notification) {
+        Storage.setup()
         MonitorEngine.shared.setup()
         HotkeyManager.setup()
     }
