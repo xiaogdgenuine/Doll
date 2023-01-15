@@ -13,6 +13,12 @@
 		3A05F319D3B6EACC3882AF88 /* UserDefaultSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A05F135761A1F95B691AC9F /* UserDefaultSettings.swift */; };
 		3A05FBC07A5CF3CCC2701FBC /* AppSettings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A05F3535C3D4AB6303DEDA5 /* AppSettings.swift */; };
 		3A05FCF2E46CD3CFEAB29839 /* NotificationView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3A05F1218D99BE11708A20CF /* NotificationView.swift */; };
+		893D12FC296DB2C10071F166 /* KeyboardShortcuts in Frameworks */ = {isa = PBXBuildFile; productRef = 893D12FB296DB2C10071F166 /* KeyboardShortcuts */; };
+		893D12FE296DB2EF0071F166 /* HotkeyManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = 893D12FD296DB2EF0071F166 /* HotkeyManager.swift */; };
+		893D1300296DC5CB0071F166 /* GiantBadgeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 893D12FF296DC5CB0071F166 /* GiantBadgeView.swift */; };
+		893D1302296EF6AC0071F166 /* Storage.swift in Sources */ = {isa = PBXBuildFile; fileRef = 893D1301296EF6AC0071F166 /* Storage.swift */; };
+		893D1304296EF7890071F166 /* DataExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 893D1303296EF7890071F166 /* DataExtensions.swift */; };
+		893D1306296EF9530071F166 /* MonitoredAppItemView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 893D1305296EF9530071F166 /* MonitoredAppItemView.swift */; };
 		89A0BDDB280E7F8800AAA111 /* MainMenu.xib in Resources */ = {isa = PBXBuildFile; fileRef = 89A0BDDA280E7F8800AAA111 /* MainMenu.xib */; };
 		89CB806827A312340065CA70 /* LaunchAtLogin in Frameworks */ = {isa = PBXBuildFile; productRef = 89CB806727A312340065CA70 /* LaunchAtLogin */; };
 		89CB807D27A312F10065CA70 /* ViewExtensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 89CB807527A312F10065CA70 /* ViewExtensions.swift */; };
@@ -42,6 +48,11 @@
 		3A05FE1708B1B3E267E75950 /* NSEventExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NSEventExtensions.swift; sourceTree = "<group>"; };
 		3A05FE513B0F76D50EE9A90B /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		3A05FF26C7DEDD4C5CBF1E98 /* Doll.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = Doll.entitlements; sourceTree = "<group>"; };
+		893D12FD296DB2EF0071F166 /* HotkeyManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HotkeyManager.swift; sourceTree = "<group>"; };
+		893D12FF296DC5CB0071F166 /* GiantBadgeView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GiantBadgeView.swift; sourceTree = "<group>"; };
+		893D1301296EF6AC0071F166 /* Storage.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Storage.swift; sourceTree = "<group>"; };
+		893D1303296EF7890071F166 /* DataExtensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataExtensions.swift; sourceTree = "<group>"; };
+		893D1305296EF9530071F166 /* MonitoredAppItemView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MonitoredAppItemView.swift; sourceTree = "<group>"; };
 		89A0BDDA280E7F8800AAA111 /* MainMenu.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = MainMenu.xib; sourceTree = "<group>"; };
 		89CB806427A311400065CA70 /* MonitorCore */ = {isa = PBXFileReference; lastKnownFileType = wrapper; path = MonitorCore; sourceTree = "<group>"; };
 		89CB807527A312F10065CA70 /* ViewExtensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewExtensions.swift; sourceTree = "<group>"; };
@@ -69,6 +80,7 @@
 			files = (
 				B09C303928536AF9004CC54F /* Utils in Frameworks */,
 				B0CC3C862854745B006F6361 /* Introspect in Frameworks */,
+				893D12FC296DB2C10071F166 /* KeyboardShortcuts in Frameworks */,
 				89CB806827A312340065CA70 /* LaunchAtLogin in Frameworks */,
 				B09C303728536AF9004CC54F /* Monitor in Frameworks */,
 			);
@@ -137,6 +149,7 @@
 				3A05FE1708B1B3E267E75950 /* NSEventExtensions.swift */,
 				B0CC3C8728547594006F6361 /* Utils.swift */,
 				B0CC3C9028556203006F6361 /* NSImageExtensions.swift */,
+				893D1303296EF7890071F166 /* DataExtensions.swift */,
 			);
 			path = Utils;
 			sourceTree = "<group>";
@@ -151,6 +164,8 @@
 				3A05F1218D99BE11708A20CF /* NotificationView.swift */,
 				B09C303A285380DC004CC54F /* ConfigView.swift */,
 				B0CC3C82285393B0006F6361 /* MonitorConfigView.swift */,
+				893D12FF296DC5CB0071F166 /* GiantBadgeView.swift */,
+				893D1305296EF9530071F166 /* MonitoredAppItemView.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -160,6 +175,8 @@
 			children = (
 				89CB807C27A312F10065CA70 /* MonitorEngine.swift */,
 				3A05F3535C3D4AB6303DEDA5 /* AppSettings.swift */,
+				893D12FD296DB2EF0071F166 /* HotkeyManager.swift */,
+				893D1301296EF6AC0071F166 /* Storage.swift */,
 			);
 			path = Source;
 			sourceTree = "<group>";
@@ -186,6 +203,7 @@
 				B09C303628536AF9004CC54F /* Monitor */,
 				B09C303828536AF9004CC54F /* Utils */,
 				B0CC3C852854745B006F6361 /* Introspect */,
+				893D12FB296DB2C10071F166 /* KeyboardShortcuts */,
 			);
 			productName = Doll;
 			productReference = 3A05F88D951B0284A8B90FF0 /* Doll.app */;
@@ -211,6 +229,7 @@
 			packageReferences = (
 				89CB806627A312340065CA70 /* XCRemoteSwiftPackageReference "LaunchAtLogin" */,
 				B0CC3C842854745B006F6361 /* XCRemoteSwiftPackageReference "SwiftUI-Introspect" */,
+				893D12FA296DB2C10071F166 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */,
 			);
 			productRefGroup = 3A05F354614726EB3883F97A /* Products */;
 			projectDirPath = "";
@@ -269,14 +288,19 @@
 				B09C303B285380DC004CC54F /* ConfigView.swift in Sources */,
 				89CB807D27A312F10065CA70 /* ViewExtensions.swift in Sources */,
 				89CB807F27A312F10065CA70 /* StatusBarController.swift in Sources */,
+				893D1302296EF6AC0071F166 /* Storage.swift in Sources */,
 				B0CC3C8828547594006F6361 /* Utils.swift in Sources */,
 				3A05FCF2E46CD3CFEAB29839 /* NotificationView.swift in Sources */,
+				893D1300296DC5CB0071F166 /* GiantBadgeView.swift in Sources */,
 				B0CC3C9128556203006F6361 /* NSImageExtensions.swift in Sources */,
 				B0CC3C83285393B0006F6361 /* MonitorConfigView.swift in Sources */,
 				3A05F319D3B6EACC3882AF88 /* UserDefaultSettings.swift in Sources */,
 				3A05FBC07A5CF3CCC2701FBC /* AppSettings.swift in Sources */,
+				893D1306296EF9530071F166 /* MonitoredAppItemView.swift in Sources */,
+				893D1304296EF7890071F166 /* DataExtensions.swift in Sources */,
 				3A05F0D44C56AF54405AF0C8 /* README.md in Sources */,
 				3A05F079FD8ED95600C00E09 /* NSEventExtensions.swift in Sources */,
+				893D12FE296DB2EF0071F166 /* HotkeyManager.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -369,7 +393,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 0.0.6;
+				MARKETING_VERSION = 0.0.8;
 				PRODUCT_BUNDLE_IDENTIFIER = com.xiaogd.Doll;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -397,7 +421,7 @@
 					"@executable_path/../Frameworks",
 				);
 				MACOSX_DEPLOYMENT_TARGET = 11.0;
-				MARKETING_VERSION = 0.0.6;
+				MARKETING_VERSION = 0.0.8;
 				PRODUCT_BUNDLE_IDENTIFIER = com.xiaogd.Doll;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_EMIT_LOC_STRINGS = YES;
@@ -490,6 +514,14 @@
 /* End XCConfigurationList section */
 
 /* Begin XCRemoteSwiftPackageReference section */
+		893D12FA296DB2C10071F166 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sindresorhus/KeyboardShortcuts";
+			requirement = {
+				kind = exactVersion;
+				version = 1.7.2;
+			};
+		};
 		89CB806627A312340065CA70 /* XCRemoteSwiftPackageReference "LaunchAtLogin" */ = {
 			isa = XCRemoteSwiftPackageReference;
 			repositoryURL = "https://github.com/sindresorhus/LaunchAtLogin";
@@ -509,6 +541,11 @@
 /* End XCRemoteSwiftPackageReference section */
 
 /* Begin XCSwiftPackageProductDependency section */
+		893D12FB296DB2C10071F166 /* KeyboardShortcuts */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = 893D12FA296DB2C10071F166 /* XCRemoteSwiftPackageReference "KeyboardShortcuts" */;
+			productName = KeyboardShortcuts;
+		};
 		89CB806727A312340065CA70 /* LaunchAtLogin */ = {
 			isa = XCSwiftPackageProductDependency;
 			package = 89CB806627A312340065CA70 /* XCRemoteSwiftPackageReference "LaunchAtLogin" */;

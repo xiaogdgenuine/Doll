@@ -7,12 +7,19 @@ let defaultIcon = #imageLiteral(resourceName: "DefaultStatusBarIcon")
 
 class StatusBarController {
     private var statusBar: NSStatusBar!
-    private var statusItem: NSStatusItem!
     private var latestBadgeText = ""
+    private var latestMessageCount = 0
 
+    private var giantBadgeController = GiantBadgeViewController()
+    private var giantBadgePanel = NSPanel(contentRect: NSRect(origin: .zero, size: defaultWindowSize),
+                              styleMask: [.nonactivatingPanel],
+                              backing: .buffered, defer: false)
+    private var lastTimeShowingGiantBadge = Date()
+
+    public var statusItem: NSStatusItem!
     public var monitoredApp: MonitoredApp? {
         didSet {
-            monitoredAppIcon = NSWorkspace.shared.icon(forFile: NSWorkspace.shared.urlForApplication(withBundleIdentifier: monitoredApp?.bundleId ?? "")?.absoluteURL.path ?? "")
+            refreshIcon()
         }
     }
     private var monitoredAppIcon: NSImage?
@@ -34,14 +41,19 @@ class StatusBarController {
             statusBarButton.target = self
             statusBarButton.toolTip = NSLocalizedString("Hold option key ⌥ and click to config", comment: "")
         }
+
+        giantBadgePanel.isOpaque = false
+        giantBadgePanel.hasShadow = false
+        giantBadgePanel.backgroundColor = NSColor.clear
+    }
+
+    func refreshIcon() {
+        monitoredAppIcon = Storage.appIcon(for: monitoredApp?.bundleId ?? "")
+        updateBadgeText(latestBadgeText, force: true)
     }
 
     @objc func onIconClicked(sender: AnyObject) {
-        var appRunning = false
-
-        if let monitoredApp = monitoredApp {
-            appRunning = MonitorService.isMonitoredAppRunning(appName: monitoredApp.appName)
-        }
+        hideGiantBadge()
 
         let noAppSelected = statusItem.button?.image == defaultIcon
         let isOptionKeyHolding = NSEvent.modifierFlags.contains(.option)
@@ -51,6 +63,7 @@ class StatusBarController {
             MonitorEngine.shared.showConfigWindow()
         } else if let monitoredAppName = monitoredApp?.appName,
                   let monitoredAppBundleId = monitoredApp?.bundleId {
+            let appRunning = MonitorService.isMonitoredAppRunning(bundleIdentifier: monitoredAppBundleId)
             if !appRunning {
                 guard let appURL = NSWorkspace.shared.urlForApplication(withBundleIdentifier: monitoredAppBundleId) else {
                     return
@@ -58,7 +71,13 @@ class StatusBarController {
 
                 NSWorkspace.shared.open(appURL)
             } else {
-                MonitorService.openMonitoredApp(appName: monitoredAppName)
+                if NSWorkspace.shared.frontmostApplication?.bundleIdentifier == monitoredAppBundleId {
+                    // Hide the app
+                    NSWorkspace.shared.frontmostApplication?.hide()
+                } else {
+                    // Send the app window to front most
+                    MonitorService.openMonitoredApp(appName: monitoredAppName)
+                }
             }
         }
     }
@@ -90,11 +109,17 @@ class StatusBarController {
         }
 
         MonitorService.observe(appName: appName) { [weak self] badge in
-            if AppSettings.hideWhenNothingComing && (badge.isNil || badge?.isEmpty == true) {
+            let appRunning = MonitorService.isMonitoredAppRunning(bundleIdentifier: targetBundle.bundleIdentifier ?? "")
+            let appIsNotRunningAndIconShouldBeHidden = AppSettings.hideWhenAppNotRunning && !appRunning
+            let badgeIsEmptyAndIconShouldBeHidden = AppSettings.hideWhenNothingComing && (badge.isNil || badge?.isEmpty == true)
+
+            if appIsNotRunningAndIconShouldBeHidden || badgeIsEmptyAndIconShouldBeHidden {
                 self?.hideStatusBar()
             } else {
                 self?.updateBadgeText(badge)
             }
+
+            self?.repositionGiantBadge()
         }
     }
 
@@ -125,16 +150,15 @@ class StatusBarController {
         }
 
         let textWidth = (text ?? "")
-                .width(withConstrainedHeight: defaultIconSize, font: .systemFont(ofSize: 14))
+            .width(withConstrainedHeight: defaultIconSize, font: .systemFont(ofSize: 14))
         statusItem.length = defaultIconSize + textWidth
 
         // New notification comes in
         let newText = text ?? ""
 
-        if AppSettings.showAlertInFullScreenMode && !newText.isEmpty && latestBadgeText != newText {
-            tryShowTheNewNotificationPopover(newText: newText)
+        if newText.isEmpty {
+            hideGiantBadge()
         }
-        latestBadgeText = newText
         
         guard let monitoredAppIcon = monitoredAppIcon else {
             return
@@ -149,6 +173,28 @@ class StatusBarController {
             updateBadgeIcon(icon: monitoredAppIcon, size: CGSize(width: defaultIconSize, height: defaultIconSize))
             statusItem.button?.title = newText
         }
+
+        let newMessageCount = Int(newText) ?? 0
+        if latestBadgeText != newText {
+            if AppSettings.showAlertInFullScreenMode {
+                tryShowTheNewNotificationPopover(newText: newText)
+            }
+
+            let frontmostAppIsMonitoredApp = NSWorkspace.shared.frontmostApplication?.bundleIdentifier == monitoredApp?.bundleId
+            if !frontmostAppIsMonitoredApp, AppSettings.isGiantBadgeEnabled(for: monitoredApp?.appName ?? "") {
+                // Don't show giant badge when message count is decreasing
+                if newMessageCount >= latestMessageCount {
+                    tryShowGiantBadge(text)
+                } else {
+                    hideGiantBadge()
+                }
+            } else {
+                hideGiantBadge()
+            }
+        }
+
+        latestBadgeText = newText
+        latestMessageCount = newMessageCount
     }
 
     func refreshDisplayMode() {
@@ -168,8 +214,52 @@ class StatusBarController {
         }
     }
 
+    func tryShowGiantBadge(_ text: String?) {
+        let now = Date()
+        if !giantBadgePanel.isVisible || now.timeIntervalSince(lastTimeShowingGiantBadge) >= 3 {
+            lastTimeShowingGiantBadge = now
+            let currentActiveWindowIsFullScreen = Utils.currentActiveWindowIsFullScreen
+
+            if giantBadgePanel.contentViewController != nil {
+                giantBadgeController.animationFlag.toggle()
+            } else {
+                let giantBadgeView = GiantBadgeView(controller: giantBadgeController) { [weak self] in
+                    guard let self = self else { return }
+                    self.onIconClicked(sender: self)
+                }
+                giantBadgePanel.contentViewController = NSHostingController(rootView: giantBadgeView)
+                giantBadgePanel.setContentSize(giantBadgeSize)
+            }
+
+            repositionGiantBadge()
+            giantBadgePanel.level = .popUpMenu
+            giantBadgePanel.setIsVisible(true)
+            giantBadgePanel.orderFrontRegardless()
+        }
+    }
+
+    func repositionGiantBadge() {
+        guard let activeScreen = NSScreen.screenWithMouse,
+           let iconFrame = statusItem.button?.window?.frame else {
+            return
+        }
+
+        var menubarOffset: CGFloat = 0
+        if Utils.currentActiveWindowIsFullScreen {
+            // In mac with notch, the menubar didn't affect window's size
+            menubarOffset = activeScreen.hasTopNotchDesign ? 0 : Utils.menubarHeight
+        }
+
+        giantBadgePanel.setFrameOrigin(NSPoint(x: iconFrame.midX - giantBadgeSize.width / 2, y: activeScreen.visibleFrame.maxY - giantBadgeSize.height + menubarOffset + giantBadgeYOffset))
+    }
+
+    func hideGiantBadge() {
+        giantBadgePanel.setIsVisible(false)
+    }
+
     func tryShowTheNewNotificationPopover(newText: String) {
-        if currentActiveWindowIsFullScreen() {
+        if Utils.currentActiveWindowIsFullScreen {
+
             let notificationPopover = createNotificationPopover(newText: newText)
             showPopover(popover: notificationPopover)
             DispatchQueue.main.asyncAfter(deadline: .now() + 3) { [weak self] in
@@ -183,6 +273,7 @@ class StatusBarController {
             MonitorService.unObserve(appName: monitoredApp.appName)
             MonitorEngine.shared.unMonitor(app: monitoredApp)
             statusBar.removeStatusItem(statusItem)
+            AppSettings.toggleGiantBadge(for: monitoredApp.appName, value: false)
         }
     }
 
@@ -208,49 +299,6 @@ class StatusBarController {
     }
 }
 
-extension StatusBarController {
-    func currentActiveWindowIsFullScreen() -> Bool {
-        guard let frontmostPid = NSWorkspace.shared.frontmostApplication?.processIdentifier else {
-            return false
-        }
-
-        let appElement = AXUIElementCreateApplication(frontmostPid)
-        var frontmostWindow: AnyObject?
-        var activeWindowSize: AnyObject?
-        var activeWindowRole: AnyObject?
-        AXUIElementCopyAttributeValue(appElement, kAXFocusedWindowAttribute as CFString, &frontmostWindow)
-
-        if frontmostWindow != nil {
-            let activeWindow = frontmostWindow as! AXUIElement
-
-            AXUIElementCopyAttributeValue(
-                    activeWindow, kAXRoleAttribute as CFString, &activeWindowRole
-            )
-
-            if let windowRole = activeWindowRole as? String, windowRole == "AXScrollArea" {
-                // Desktop window will return AXScrollArea role, it doesn't count, as Desktop always in fullscreen mode
-                return false
-            }
-
-            AXUIElementCopyAttributeValue(
-                    activeWindow, kAXSizeAttribute as CFString, &activeWindowSize
-            )
-
-            if activeWindowSize != nil,
-               let activeScreen = NSScreen.getScreenWithMouse() {
-                var windowSize = CGSize()
-                AXValueGetValue(activeWindowSize as! AXValue, .cgSize, &windowSize)
-
-                // Second case is for new mac with notched menubar
-                return windowSize.height == activeScreen.frame.size.height ||
-                windowSize.height == activeScreen.frame.size.height - (NSApplication.shared.mainMenu?.menuBarHeight ?? 0)
-            }
-        }
-
-        return false
-    }
-}
-
 extension String {
     func width(withConstrainedHeight height: CGFloat, font: NSFont) -> CGFloat {
         let constraintRect = CGSize(width: .greatestFiniteMagnitude, height: height)
@@ -261,7 +309,7 @@ extension String {
 }
 
 extension NSScreen {
-    static func getScreenWithMouse() -> NSScreen? {
+    static var screenWithMouse: NSScreen? {
         let mouseLocation = NSEvent.mouseLocation
         let screens = NSScreen.screens
         let screenWithMouse = (screens.first {
@@ -269,5 +317,9 @@ extension NSScreen {
         })
 
         return screenWithMouse
+    }
+    var hasTopNotchDesign: Bool {
+        guard #available(macOS 12, *) else { return false }
+        return safeAreaInsets.top != 0
     }
 }

@@ -1,12 +1,14 @@
 "Select an app to monitor its badge" = "􀊫 Select an app to monitor its badge";
 "About" = "About";
-"Stop monitor" = "Stop monitor";
+"Stop monitoring" = "Stop monitoring";
 "Quit" = "Quit";
 "Launch at login" = "Launch at login";
-"Hide icon when there's no new notifications" = "Hide icon when there's no new notifications";
+"Hide icon if monitored app isn't running" = "Hide icon if monitored app isn't running";
+"Hide icons when there are no new notifications" = "Hide icons when there are no new notifications";
 "Show notification on full screen mode" = "Show notification even when menu bar is hidden";
 "Show as red badge" = "Show notification as a red badge";
 "Show only app icon" = "Just show app icon, hide all notifications";
+"Hotkey to open this config window" = "Hotkey to open this config window:";
 
 "About Doll" = "About Doll";
 "Tip me" = "Buy me a coffee if you love this app! :)";
@@ -21,3 +23,7 @@
 "OK" = "OK";
 "Permission grant guideline" = "Please go to \nSystem Preferences -> Security & Privacy -> Privacy -> Accessibility\nadd Doll to the list so it can monitor badge updates.";
 "Add monitor guideline" = "No app is monitoring, click \"+\" to add one.";
+
+
+"Don't want to miss any message from this app :)" = "Don't want to miss any message from this app :)";
+"Change icon" = "Change icon";

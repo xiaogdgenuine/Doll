@@ -1,5 +1,8 @@
 
 class AppSettings {
+    @UserDefaultSetting("SETTINGS_Hide_When_App_Not_Running")
+    static var hideWhenAppNotRunning = false
+
     @UserDefaultSetting("SETTINGS_Hide_When_Nothing_Coming")
     static var hideWhenNothingComing = false
 
@@ -11,4 +14,15 @@ class AppSettings {
 
     @UserDefaultSetting("SETTINGS_Show_Only_App_Icon")
     static var showOnlyAppIcon = false
+
+    @UserDefaultSetting("SETTINGS_Giant_Badge_Enabled_Apps")
+    static var giantBadgeConfigs: [String: Bool] = [:]
+
+    static func toggleGiantBadge(for appName: String, value: Bool) {
+        AppSettings.giantBadgeConfigs[appName] = value
+    }
+
+    static func isGiantBadgeEnabled(for appName: String) -> Bool {
+        AppSettings.giantBadgeConfigs[appName] ?? false
+    }
 }

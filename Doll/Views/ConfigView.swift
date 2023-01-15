@@ -8,6 +8,7 @@
 import SwiftUI
 import LaunchAtLogin
 import Monitor
+import KeyboardShortcuts
 
 struct ConfigView: View {
 
@@ -18,6 +19,7 @@ struct ConfigView: View {
     @State private var showAboutPage = false
 
     @State private var startAtLogin = false
+    @State private var hideWhenAppNotRunning = AppSettings.hideWhenAppNotRunning
     @State private var hideWhenNothingComing = AppSettings.hideWhenNothingComing
     @State private var showAlertInFullScreenMode = AppSettings.showAlertInFullScreenMode
     @State private var showAsRedBadge = AppSettings.showAsRedBadge
@@ -40,12 +42,7 @@ struct ConfigView: View {
                                 }
                                 MonitorConfigView(itemIndex: itemIndex, statusBar: statusBar, selectedApp: item)
                             } label: {
-                                HStack {
-                                    Image(nsImage: Utils.getAppIcon(bundleId: item.bundleId))
-                                        .resizable()
-                                        .frame(width: 20, height: 20)
-                                    Text(item.appName)
-                                }.padding(.vertical, 8)
+                                MonitoredAppItemView(appItem: item)
                             }
                         }
                     }.frame(minWidth: 250)
@@ -60,7 +57,11 @@ struct ConfigView: View {
                             .padding([.top])
 
                     Group {
-                        Toggle("Hide icon when there's no new notifications", isOn: $hideWhenNothingComing)
+                        Toggle("Hide icon if monitored app isn't running", isOn: $hideWhenAppNotRunning)
+                                .onChange(of: hideWhenAppNotRunning) { enabled in
+                                    AppSettings.hideWhenAppNotRunning = enabled
+                                }
+                        Toggle("Hide icons when there are no new notifications", isOn: $hideWhenNothingComing)
                                 .onChange(of: hideWhenNothingComing) { enabled in
                                     AppSettings.hideWhenNothingComing = enabled
                                 }
@@ -75,7 +76,9 @@ struct ConfigView: View {
                                         $0.refreshDisplayMode()
                                     }
                                 }
-                    }.disabled(showOnlyAppIcon)
+                    }
+                    .fixedSize()
+                    .disabled(showOnlyAppIcon)
                     
                     Toggle("Show only app icon", isOn: $showOnlyAppIcon)
                             .onChange(of: showOnlyAppIcon) { enabled in
@@ -84,6 +87,12 @@ struct ConfigView: View {
                                     $0.refreshDisplayMode()
                                 }
                             }
+                            .fixedSize()
+
+                    Text("Hotkey to open this config window")
+                        .fixedSize()
+                    KeyboardShortcuts
+                        .Recorder("", name: .toggleConfigWindow)
                 }
                         .padding()
 

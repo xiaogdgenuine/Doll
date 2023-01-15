@@ -9,6 +9,7 @@ import AppKit
 import Foundation
 
 extension NSImage {
+    var png: Data? { tiffRepresentation?.bitmap?.png }
 
     func addBadgeToImage(drawText text: String) -> NSImage {
         let canvasWidth = defaultIconSize
@@ -50,4 +51,8 @@ extension NSImage {
         }
         return targetImage
     }
+}
+
+extension NSBitmapImageRep {
+    var png: Data? { representation(using: .png, properties: [:]) }
 }
