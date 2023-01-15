@@ -24,21 +24,21 @@ enum Utils {
               let screenWithMouse = NSScreen.screenWithMouse else {
             return false
         }
-
-       var activeWindowSizeAX: AnyObject?
-       AXUIElementCopyAttributeValue(
-               activeWindow, kAXSizeAttribute as CFString, &activeWindowSizeAX
-       )
-       if activeWindowSizeAX != nil {
-           var windowSize = CGSize.zero
-           AXValueGetValue(activeWindowSizeAX as! AXValue, .cgSize, &windowSize)
-
-           // In Mac with notch on menubar, this is the only way I found to detect either current window is in fullscreen
-           if windowSize.height == screenWithMouse.frame.size.height - (NSApplication.shared.mainMenu?.menuBarHeight ?? 0) {
-               return true
-           }
-       }
-
+        
+        var activeWindowSizeAX: AnyObject?
+        AXUIElementCopyAttributeValue(
+            activeWindow, kAXSizeAttribute as CFString, &activeWindowSizeAX
+        )
+        if activeWindowSizeAX != nil {
+            var windowSize = CGSize.zero
+            AXValueGetValue(activeWindowSizeAX as! AXValue, .cgSize, &windowSize)
+            
+            // In Mac with notch on menubar, this is the only way I found to detect either current window is in fullscreen
+            if windowSize.height == screenWithMouse.frame.size.height - (NSApplication.shared.mainMenu?.menuBarHeight ?? 0) {
+                return true
+            }
+        }
+        
         var fullScreenButton: AnyObject?
         AXUIElementCopyAttributeValue(
             activeWindow, kAXFullScreenButtonAttribute as CFString, &fullScreenButton
@@ -48,12 +48,12 @@ enum Utils {
             AXUIElementCopyAttributeValue(fullScreenButton as! AXUIElement, kAXPositionAttribute as CFString, &fullScreenButtonPositionAX)
         }
         if fullScreenButtonPositionAX != nil,
-           let mainScreen = NSScreen.main {
+           let mainScreen = NSScreen.screens.first {
             var fullScreenButtonPosition = CGPoint.zero
             AXValueGetValue(fullScreenButtonPositionAX as! AXValue, .cgPoint, &fullScreenButtonPosition)
-
+            
             // If mac connected to multiple displays,
-
+            
             /*
              * Which coordinator system kAXPositionAttribute value use:
              *
@@ -118,12 +118,15 @@ enum Utils {
              *  Screen2.menubar.frame.maxY = 50(MainScreen.frame.maxY) - 30(Screen2.visibleFrame.maxY) = 20
              */
             let menubarYPositionThresholdInActiveScreen = mainScreen.frame.maxY - screenWithMouse.visibleFrame.maxY
-
             // If a window is fullscreen, it's fullscreen button(The whole toolbar actually) y offset is less than menubar.frame.maxY
             return fullScreenButtonPosition.y < menubarYPositionThresholdInActiveScreen
         }
-
+        
         return false
+    }
+
+    static var menubarHeight: CGFloat {
+        NSApplication.shared.menu?.menuBarHeight ?? 0
     }
 
     static var frontmostProcessId: pid_t? {

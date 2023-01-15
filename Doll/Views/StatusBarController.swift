@@ -231,11 +231,7 @@ class StatusBarController {
                 giantBadgePanel.setContentSize(giantBadgeSize)
             }
 
-            if let activeScreen = NSScreen.screenWithMouse,
-               let iconFrame = statusItem.button?.window?.frame {
-                let menubarHeight = currentActiveWindowIsFullScreen ? 0 : NSApplication.shared.mainMenu?.menuBarHeight ?? 0
-                giantBadgePanel.setFrameOrigin(NSPoint(x: iconFrame.midX - giantBadgeSize.width / 2, y: activeScreen.frame.maxY - giantBadgeSize.height / 2 - menubarHeight / 2))
-            }
+            repositionGiantBadge()
             giantBadgePanel.level = .popUpMenu
             giantBadgePanel.setIsVisible(true)
             giantBadgePanel.orderFrontRegardless()
@@ -248,7 +244,9 @@ class StatusBarController {
             return
         }
 
-        giantBadgePanel.setFrameOrigin(NSPoint(x: iconFrame.midX - giantBadgeSize.width / 2, y: activeScreen.visibleFrame.maxY - giantBadgeSize.height + giantBadgeYOffset))
+        let menubarOffset = Utils.currentActiveWindowIsFullScreen ? Utils.menubarHeight : 0
+        print(menubarOffset)
+        giantBadgePanel.setFrameOrigin(NSPoint(x: iconFrame.midX - giantBadgeSize.width / 2, y: activeScreen.visibleFrame.maxY - giantBadgeSize.height + menubarOffset + giantBadgeYOffset))
     }
 
     func hideGiantBadge() {
