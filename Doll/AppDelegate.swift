@@ -7,9 +7,9 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         MonitorEngine.shared.setup()
         HotkeyManager.setup()
 
-//       if AXIsProcessTrustedWithOptions(["AXTrustedCheckOptionPrompt": true] as CFDictionary) {
-//           print("Trusted by client")
-//       }
+       if AXIsProcessTrustedWithOptions(["AXTrustedCheckOptionPrompt": true] as CFDictionary) {
+           print("Trusted by client")
+       }
     }
 
     func applicationWillBecomeActive(_ notification: Notification) {

@@ -244,8 +244,12 @@ class StatusBarController {
             return
         }
 
-        let menubarOffset = Utils.currentActiveWindowIsFullScreen ? Utils.menubarHeight : 0
-        print(menubarOffset)
+        var menubarOffset: CGFloat = 0
+        if Utils.currentActiveWindowIsFullScreen {
+            // In mac with notch, the menubar didn't affect window's size
+            menubarOffset = activeScreen.hasTopNotchDesign ? 0 : Utils.menubarHeight
+        }
+
         giantBadgePanel.setFrameOrigin(NSPoint(x: iconFrame.midX - giantBadgeSize.width / 2, y: activeScreen.visibleFrame.maxY - giantBadgeSize.height + menubarOffset + giantBadgeYOffset))
     }
 
@@ -313,5 +317,9 @@ extension NSScreen {
         })
 
         return screenWithMouse
+    }
+    var hasTopNotchDesign: Bool {
+        guard #available(macOS 12, *) else { return false }
+        return safeAreaInsets.top != 0
     }
 }
