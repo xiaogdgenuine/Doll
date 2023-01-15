@@ -7,7 +7,6 @@ let defaultIcon = #imageLiteral(resourceName: "DefaultStatusBarIcon")
 
 class StatusBarController {
     private var statusBar: NSStatusBar!
-    private var statusItem: NSStatusItem!
     private var latestBadgeText = ""
     private var latestMessageCount = 0
 
@@ -17,6 +16,7 @@ class StatusBarController {
                               backing: .buffered, defer: false)
     private var lastTimeShowingGiantBadge = Date()
 
+    public var statusItem: NSStatusItem!
     public var monitoredApp: MonitoredApp? {
         didSet {
             refreshIcon()
@@ -219,7 +219,6 @@ class StatusBarController {
         if !giantBadgePanel.isVisible || now.timeIntervalSince(lastTimeShowingGiantBadge) >= 3 {
             lastTimeShowingGiantBadge = now
             let currentActiveWindowIsFullScreen = Utils.currentActiveWindowIsFullScreen
-            giantBadgeController.isFullscreen = currentActiveWindowIsFullScreen
 
             if giantBadgePanel.contentViewController != nil {
                 giantBadgeController.animationFlag.toggle()
@@ -249,12 +248,7 @@ class StatusBarController {
             return
         }
 
-        giantBadgeController.isFullscreen = Utils.currentActiveWindowIsFullScreen
-        giantBadgeController.statusItemWidth = statusItem.length
-        giantBadgeController.statusItemHeight = statusItem.button?.frame.height ?? statusItem.length
-//        let yOffset = currentActiveWindowIsFullScreen ? menubarHeight / 2 : -(menubarHeight / 2)
-        let yOffset: CGFloat = 0
-        giantBadgePanel.setFrameOrigin(NSPoint(x: iconFrame.midX - giantBadgeSize.width / 2, y: activeScreen.frame.maxY - giantBadgeSize.height + yOffset))
+        giantBadgePanel.setFrameOrigin(NSPoint(x: iconFrame.midX - giantBadgeSize.width / 2, y: activeScreen.visibleFrame.maxY - giantBadgeSize.height + giantBadgeYOffset))
     }
 
     func hideGiantBadge() {

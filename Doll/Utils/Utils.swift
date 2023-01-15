@@ -20,19 +20,24 @@ enum Utils {
     }
 
     static var currentActiveWindowIsFullScreen: Bool {
-        guard let activeWindow = frontmostWindow else {
+        guard let activeWindow = frontmostWindowAX,
+              let screenWithMouse = NSScreen.screenWithMouse else {
             return false
         }
 
-        var activeWindowRole: AnyObject?
-        AXUIElementCopyAttributeValue(
-            activeWindow, kAXRoleAttribute as CFString, &activeWindowRole
-        )
+       var activeWindowSizeAX: AnyObject?
+       AXUIElementCopyAttributeValue(
+               activeWindow, kAXSizeAttribute as CFString, &activeWindowSizeAX
+       )
+       if activeWindowSizeAX != nil {
+           var windowSize = CGSize.zero
+           AXValueGetValue(activeWindowSizeAX as! AXValue, .cgSize, &windowSize)
 
-        if let windowRole = activeWindowRole as? String, windowRole == "AXScrollArea" {
-            // Desktop window will return AXScrollArea role, it doesn't count, as Desktop always in fullscreen mode
-            return false
-        }
+           // In Mac with notch on menubar, this is the only way I found to detect either current window is in fullscreen
+           if windowSize.height == screenWithMouse.frame.size.height - (NSApplication.shared.mainMenu?.menuBarHeight ?? 0) {
+               return true
+           }
+       }
 
         var fullScreenButton: AnyObject?
         AXUIElementCopyAttributeValue(
@@ -42,10 +47,9 @@ enum Utils {
         if let fullScreenButton = fullScreenButton {
             AXUIElementCopyAttributeValue(fullScreenButton as! AXUIElement, kAXPositionAttribute as CFString, &fullScreenButtonPositionAX)
         }
-        var fullScreenButtonPosition = CGPoint.zero
         if fullScreenButtonPositionAX != nil,
-        let screenWithMouse = NSScreen.screenWithMouse,
            let mainScreen = NSScreen.main {
+            var fullScreenButtonPosition = CGPoint.zero
             AXValueGetValue(fullScreenButtonPositionAX as! AXValue, .cgPoint, &fullScreenButtonPosition)
 
             // If mac connected to multiple displays,
@@ -111,9 +115,9 @@ enum Utils {
              *
              *  Screen2.visibleFrame.minY = -20
              *  Screen2.visibleFrame.maxY = -20 + 50(Screen2.visibleFrame.height) = 30
-             *  Screen2.menubar.frame.maxY = 50(MainScreen.frame.height) - 30(Screen2.visibleFrame.maxY) = 20
+             *  Screen2.menubar.frame.maxY = 50(MainScreen.frame.maxY) - 30(Screen2.visibleFrame.maxY) = 20
              */
-            let menubarYPositionThresholdInActiveScreen = mainScreen.frame.height - screenWithMouse.visibleFrame.maxY
+            let menubarYPositionThresholdInActiveScreen = mainScreen.frame.maxY - screenWithMouse.visibleFrame.maxY
 
             // If a window is fullscreen, it's fullscreen button(The whole toolbar actually) y offset is less than menubar.frame.maxY
             return fullScreenButtonPosition.y < menubarYPositionThresholdInActiveScreen
@@ -126,18 +130,19 @@ enum Utils {
         NSWorkspace.shared.frontmostApplication?.processIdentifier
     }
 
-    static var frontmostWindow: AXUIElement? {
+    static var frontmostApplicationAX: AXUIElement? {
+        guard let frontmostPid = frontmostProcessId else { return nil }
+        return AXUIElementCreateApplication(frontmostPid)
+    }
 
-        guard let frontmostPid = frontmostProcessId else {
-            return nil
-        }
+    static var frontmostWindowAX: AXUIElement? {
+        guard let appElement = frontmostApplicationAX else { return nil }
 
-        let appElement = AXUIElementCreateApplication(frontmostPid)
-        var frontmostWindow: AnyObject?
-        AXUIElementCopyAttributeValue(appElement, kAXFocusedWindowAttribute as CFString, &frontmostWindow)
+        var frontmostWindowAX: AnyObject?
+        AXUIElementCopyAttributeValue(appElement, kAXFocusedWindowAttribute as CFString, &frontmostWindowAX)
 
-        if frontmostWindow != nil {
-            return frontmostWindow as! AXUIElement
+        if frontmostWindowAX != nil {
+            return frontmostWindowAX as! AXUIElement
         }
 
         return nil
