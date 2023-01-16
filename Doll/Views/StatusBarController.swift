@@ -183,7 +183,7 @@ class StatusBarController {
             let frontmostAppIsMonitoredApp = NSWorkspace.shared.frontmostApplication?.bundleIdentifier == monitoredApp?.bundleId
             if !frontmostAppIsMonitoredApp, AppSettings.isGiantBadgeEnabled(for: monitoredApp?.appName ?? "") {
                 // Don't show giant badge when message count is decreasing
-                if newMessageCount >= latestMessageCount {
+                if newMessageCount > latestMessageCount {
                     tryShowGiantBadge(text)
                 } else {
                     hideGiantBadge()
