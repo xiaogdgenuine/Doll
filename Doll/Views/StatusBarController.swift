@@ -93,7 +93,7 @@ class StatusBarController {
             return
         }
 
-        let appName = (targetBundle.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String) ?? app.appName
+        let appName = app.appName
         statusItem.autosaveName = "Doll_\(app.bundleId)"
         updateBadgeText(nil)
 
