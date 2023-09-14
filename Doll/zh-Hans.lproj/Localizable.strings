@@ -5,6 +5,7 @@
 "Launch at login" = "跟随电脑启动";
 "Hide icon if monitored app isn't running" = "App 没有启动时，隐藏图标";
 "Hide icons when there are no new notifications" = "App 没有通知时，隐藏图标";
+"Grayout icons when there are no new notifications" = "App 没有通知时，图标显示成灰色";
 "Show notification on full screen mode" = "菜单栏隐藏时也显示 App 通知";
 "Show as red badge" = "将 App 通知显示为红色角标";
 "Show only app icon" = "只显示 App 图标，不显示任何通知";

@@ -100,11 +100,7 @@ class StatusBarController {
         guard let monitoredAppIcon = monitoredAppIcon else {
             return
         }
-        if AppSettings.showAsRedBadge {
-            updateBadgeIcon(icon: monitoredAppIcon, size: CGSize(width: defaultIconSize, height: defaultIconSize))
-        } else {
-            updateBadgeIcon(icon: monitoredAppIcon, size: CGSize(width: defaultIconSize, height: defaultIconSize))
-        }
+        updateBadgeIcon(icon: monitoredAppIcon, size: CGSize(width: defaultIconSize, height: defaultIconSize))
 
         MonitorService.observe(appName: appName) { [weak self] badge in
             let appRunning = MonitorService.isMonitoredAppRunning(bundleIdentifier: targetBundle.bundleIdentifier ?? "")
@@ -143,7 +139,13 @@ class StatusBarController {
     func updateBadgeText(_ text: String?, force: Bool = false) {
         statusItem.isVisible = true
 
-        guard !AppSettings.showOnlyAppIcon, force || statusItem.button?.title != text else {
+        guard !AppSettings.showOnlyAppIcon else {
+            latestBadgeText = text ?? ""
+            refreshAppIcon()
+            return
+        }
+
+        guard force || statusItem.button?.title != text else {
             return
         }
 
@@ -163,12 +165,17 @@ class StatusBarController {
         }
 
         if AppSettings.showAsRedBadge {
-            updateBadgeIcon(icon: monitoredAppIcon.addBadgeToImage(drawText: newText))
+            let defaultIcon = monitoredAppIcon.addBadgeToImage(drawText: newText)
+            let adjustedIcon = (newText.isEmpty && AppSettings.grayoutIconWhenNothingComing) ? (defaultIcon.grayOut() ?? defaultIcon) : defaultIcon
+            updateBadgeIcon(icon: adjustedIcon)
             statusItem.length = defaultIconSize
             statusItem.button?.title = ""
         } else {
+            let defaultIcon = monitoredAppIcon
+            let adjustedIcon = (newText.isEmpty && AppSettings.grayoutIconWhenNothingComing) ? (defaultIcon.grayOut() ?? defaultIcon) : defaultIcon
+            updateBadgeIcon(icon: adjustedIcon)
             statusItem.length = defaultIconSize + textWidth
-            updateBadgeIcon(icon: monitoredAppIcon, size: CGSize(width: defaultIconSize, height: defaultIconSize))
+            updateBadgeIcon(icon: adjustedIcon, size: CGSize(width: defaultIconSize, height: defaultIconSize))
             statusItem.button?.title = newText
         }
 
@@ -197,12 +204,18 @@ class StatusBarController {
 
     func refreshDisplayMode() {
         if AppSettings.showOnlyAppIcon {
-            statusItem.length = defaultIconSize
-            statusItem.button?.title = ""
-            updateBadgeIcon(icon: monitoredAppIcon, size: CGSize(width: defaultIconSize, height: defaultIconSize))
+            refreshAppIcon()
         } else {
             updateBadgeText(latestBadgeText, force: true)
         }
+    }
+
+    func refreshAppIcon() {
+        guard let monitoredAppIcon else { return }
+        let adjustedIcon = (latestBadgeText.isEmpty && AppSettings.grayoutIconWhenNothingComing) ? (monitoredAppIcon.grayOut() ?? monitoredAppIcon) : monitoredAppIcon
+        statusItem.length = defaultIconSize
+        statusItem.button?.title = ""
+        updateBadgeIcon(icon: adjustedIcon, size: CGSize(width: defaultIconSize, height: defaultIconSize))
     }
 
     func updateBadgeIcon(icon: NSImage?, size: CGSize? = nil) {
