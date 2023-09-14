@@ -21,6 +21,7 @@ struct ConfigView: View {
     @State private var startAtLogin = false
     @State private var hideWhenAppNotRunning = AppSettings.hideWhenAppNotRunning
     @State private var hideWhenNothingComing = AppSettings.hideWhenNothingComing
+    @State private var grayoutIconWhenNothingComing = AppSettings.grayoutIconWhenNothingComing
     @State private var showAlertInFullScreenMode = AppSettings.showAlertInFullScreenMode
     @State private var showAsRedBadge = AppSettings.showAsRedBadge
     @State private var showOnlyAppIcon = AppSettings.showOnlyAppIcon
@@ -58,27 +59,37 @@ struct ConfigView: View {
 
                     Group {
                         Toggle("Hide icon if monitored app isn't running", isOn: $hideWhenAppNotRunning)
-                                .onChange(of: hideWhenAppNotRunning) { enabled in
-                                    AppSettings.hideWhenAppNotRunning = enabled
-                                }
+                            .disabled(showOnlyAppIcon)
+                            .onChange(of: hideWhenAppNotRunning) { enabled in
+                                AppSettings.hideWhenAppNotRunning = enabled
+                            }
                         Toggle("Hide icons when there are no new notifications", isOn: $hideWhenNothingComing)
-                                .onChange(of: hideWhenNothingComing) { enabled in
-                                    AppSettings.hideWhenNothingComing = enabled
+                            .disabled(showOnlyAppIcon)
+                            .onChange(of: hideWhenNothingComing) { enabled in
+                                AppSettings.hideWhenNothingComing = enabled
+                            }
+                        Toggle("Grayout icons when there are no new notifications", isOn: $grayoutIconWhenNothingComing)
+                            .onChange(of: grayoutIconWhenNothingComing) { enabled in
+                                AppSettings.grayoutIconWhenNothingComing = enabled
+                                MonitorEngine.shared.statusBars.forEach {
+                                    $0.refreshDisplayMode()
                                 }
+                            }
                         Toggle("Show notification on full screen mode", isOn: $showAlertInFullScreenMode)
-                                .onChange(of: showAlertInFullScreenMode) { enabled in
-                                    AppSettings.showAlertInFullScreenMode = enabled
-                                }
+                            .disabled(showOnlyAppIcon)
+                            .onChange(of: showAlertInFullScreenMode) { enabled in
+                                AppSettings.showAlertInFullScreenMode = enabled
+                            }
                         Toggle("Show as red badge", isOn: $showAsRedBadge)
-                                .onChange(of: showAsRedBadge) { enabled in
-                                    AppSettings.showAsRedBadge = enabled
-                                    MonitorEngine.shared.statusBars.forEach {
-                                        $0.refreshDisplayMode()
-                                    }
+                            .disabled(showOnlyAppIcon)
+                            .onChange(of: showAsRedBadge) { enabled in
+                                AppSettings.showAsRedBadge = enabled
+                                MonitorEngine.shared.statusBars.forEach {
+                                    $0.refreshDisplayMode()
                                 }
+                            }
                     }
                     .fixedSize()
-                    .disabled(showOnlyAppIcon)
                     
                     Toggle("Show only app icon", isOn: $showOnlyAppIcon)
                             .onChange(of: showOnlyAppIcon) { enabled in

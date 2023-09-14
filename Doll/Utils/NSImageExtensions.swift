@@ -51,6 +51,22 @@ extension NSImage {
         }
         return targetImage
     }
+
+    func grayOut() -> NSImage? {
+        guard let cgImage = cgImage(forProposedRect: nil, context: nil, hints: nil) else {
+            return nil
+        }
+
+        let bitmap = NSBitmapImageRep(cgImage: cgImage)
+
+        guard let grayscale = bitmap.converting(to: .genericGray, renderingIntent: .default) else {
+            return nil
+        }
+
+        let grayImage = NSImage(size: size)
+        grayImage.addRepresentation(grayscale)
+        return grayImage
+    }
 }
 
 extension NSBitmapImageRep {

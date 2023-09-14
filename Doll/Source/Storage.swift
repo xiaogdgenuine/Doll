@@ -20,8 +20,9 @@ enum Storage {
 
     static func appIcon(for bundleId: String) -> NSImage {
         let imageURL = iconPath(for: bundleId)
+        let img = NSImage(contentsOf: imageURL) ?? Utils.getAppIcon(bundleId: bundleId)
 
-        return NSImage(contentsOf: imageURL) ?? Utils.getAppIcon(bundleId: bundleId)
+        return img
     }
 
     @discardableResult
