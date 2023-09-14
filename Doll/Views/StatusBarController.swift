@@ -89,16 +89,14 @@ class StatusBarController {
             return
         }
 
-        guard let targetBundle = Bundle(path: appFullPath),
-              let appName = (
-                      targetBundle.object(forInfoDictionaryKey: "CFBundleDisplayName") ??
-                      targetBundle.object(forInfoDictionaryKey: kCFBundleNameKey as String)) as? String else {
+        guard let targetBundle = Bundle(path: appFullPath) else {
             return
         }
 
+        let appName = (targetBundle.object(forInfoDictionaryKey: "CFBundleDisplayName") as? String) ?? app.appName
         statusItem.autosaveName = "Doll_\(app.bundleId)"
         updateBadgeText(nil)
-        
+
         guard let monitoredAppIcon = monitoredAppIcon else {
             return
         }
@@ -159,11 +157,11 @@ class StatusBarController {
         if newText.isEmpty {
             hideGiantBadge()
         }
-        
+
         guard let monitoredAppIcon = monitoredAppIcon else {
             return
         }
-        
+
         if AppSettings.showAsRedBadge {
             updateBadgeIcon(icon: monitoredAppIcon.addBadgeToImage(drawText: newText))
             statusItem.length = defaultIconSize
