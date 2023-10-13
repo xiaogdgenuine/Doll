@@ -70,3 +70,6 @@ Due to the limitation of Accessibility API(Can't watch for element's attribute v
 But don't worry about the performance, after all the synchronization happens only 864000 times per day, and all it does is just read and set few element's text, that's an operation executed less than **1ms**!
 
 If you found any potential Bug or Performance issue, feel free to submit a PR!
+
+# Love this app?
+<a href="https://www.buymeacoffee.com/xiaogd" target="_blank"><img src="https://cdn.buymeacoffee.com/buttons/v2/arial-yellow.png" alt="Buy Me A Coffee" width="217px" ></a>
