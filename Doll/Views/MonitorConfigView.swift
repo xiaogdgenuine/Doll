@@ -107,7 +107,7 @@ struct MonitorConfigView: View {
                 HStack {
 
                     if !isAddMode, let selectedApp = selectedApp {
-                        Toggle("Don't want to miss any message from this app :)", isOn: $showGiantBadge)
+                        Toggle("Show a red arrow so you don't miss any notifications! :)", isOn: $showGiantBadge)
                             .onChange(of: showGiantBadge) { enabled in
                                 AppSettings.toggleGiantBadge(for: selectedApp.appName, value: enabled)
                             }
