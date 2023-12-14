@@ -7,6 +7,7 @@ let defaultIcon = #imageLiteral(resourceName: "DefaultStatusBarIcon")
 
 class StatusBarController {
     private var statusBar: NSStatusBar!
+    private var isDark = false
     private var latestBadgeText = ""
     private var latestMessageCount = 0
 
@@ -49,6 +50,11 @@ class StatusBarController {
 
     func refreshIcon() {
         monitoredAppIcon = Storage.appIcon(for: monitoredApp?.bundleId ?? "")
+
+        if(AppSettings.isIconMask(for: monitoredApp?.appName ?? "") && isDark) {
+            monitoredAppIcon = monitoredAppIcon?.invert()
+        }
+
         updateBadgeText(latestBadgeText, force: true)
     }
 
@@ -110,6 +116,12 @@ class StatusBarController {
             if appIsNotRunningAndIconShouldBeHidden || badgeIsEmptyAndIconShouldBeHidden {
                 self?.hideStatusBar()
             } else {
+                let currentIsDark = self?.statusItem.button?.effectiveAppearance.name.rawValue.lowercased().contains("dark") ?? false
+                if(self?.isDark != currentIsDark) {
+                    self?.isDark = currentIsDark
+                    self?.refreshIcon()
+                }
+
                 self?.updateBadgeText(badge)
             }
 
