@@ -27,3 +27,5 @@
 
 "Show a red arrow so you don't miss any notifications! :)" = "用醒目的红色箭头标记新消息";
 "Change icon" = "更换图标";
+
+"Invert the icon color on dark mode" = "在暗黑模式下反转图标颜色";
