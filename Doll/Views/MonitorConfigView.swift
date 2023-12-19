@@ -97,7 +97,7 @@ struct MonitorConfigView: View {
                                 iconIsMask = AppSettings.isIconMask(for: selectedApp.appName)
                             }
 
-                        Toggle("Show a red arrow", isOn: $showGiantBadge)
+                        Toggle("Show a red arrow so you don't miss any notifications! :)", isOn: $showGiantBadge)
                             .onChange(of: showGiantBadge) { enabled in
                                 AppSettings.toggleGiantBadge(for: selectedApp.appName, value: enabled)
                             }
