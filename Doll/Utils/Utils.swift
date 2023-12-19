@@ -151,4 +151,15 @@ enum Utils {
         return nil
     }
 
+    static var appVersion: String {
+        let shortVersionString = Bundle.main.infoDictionary!["CFBundleShortVersionString"] as! String
+        let buildNumber = Bundle.main.infoDictionary!["CFBundleVersion"] as? String
+
+        if let buildNumber {
+            return "\(shortVersionString) build \(buildNumber)"
+        }
+
+        return shortVersionString
+    }
+
 }

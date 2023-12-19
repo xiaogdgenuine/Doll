@@ -11,7 +11,7 @@
 "Show only app icon" = "Just show app icon, hide all notifications";
 "Hotkey to open this config window" = "Hotkey to open this config window:";
 
-"About Doll" = "About Doll";
+"About Doll" = "About Doll (%@)";
 "Tip me" = "Buy me a coffee if you love this app! :)";
 "Buy me a coffee" = "Buy me a coffee";
 "Hold option key ⌥ and click to config" = "Hold option key ⌥ and click to config";
@@ -28,3 +28,5 @@
 
 "Show a red arrow so you don't miss any notifications! :)" = "Show a red arrow so you don't miss any notifications! :)";
 "Change icon" = "Change icon";
+
+"Invert the icon color base on menubar theme" = "Invert the icon color base on menubar theme";

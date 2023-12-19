@@ -86,7 +86,7 @@ struct MonitorConfigView: View {
                 HStack {
                     if !isAddMode, let selectedApp = selectedApp {
 
-                        Toggle("Use the icon as a mask", isOn: $iconIsMask)
+                        Toggle("Invert the icon color base on menubar theme", isOn: $iconIsMask)
                             .onChange(of: iconIsMask) { enabled in
                                 AppSettings.toggleIconMask(for: selectedApp.appName, value: enabled)
                                  MonitorEngine.shared.statusBars.forEach {

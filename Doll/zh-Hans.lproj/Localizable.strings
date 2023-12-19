@@ -11,7 +11,7 @@
 "Show only app icon" = "只显示 App 图标，不显示任何通知";
 "Hotkey to open this config window" = "配置窗口热键：";
 
-"About Doll" = "关于 Doll";
+"About Doll" = "关于 Doll (%@)";
 "Tip me" = "喜欢这个 App？那就支持一下吧 :)";
 "Buy me a coffee" = "请我喝杯咖啡";
 "Hold option key ⌥ and click to config" = "按住 Option(⌥) 键点击图标即可配置";
@@ -25,5 +25,5 @@
 "Permission grant guideline" = "请打开 \n偏好设置 -> 安全性与隐私 -> 隐私 -> 辅助功能\n将 Doll 添加至列表，这样它才可以顺利监听 Dock 图标消息变动。";
 "Add monitor guideline" = "当前没有任何监听, 点击左下角 \"+\" 添加一个。";
 
-"Show a red arrow so you don't miss any notifications! :)" = "我一定要看到这个 App 的消息！";
+"Show a red arrow so you don't miss any notifications! :)" = "用醒目的红色箭头标记新消息";
 "Change icon" = "更换图标";

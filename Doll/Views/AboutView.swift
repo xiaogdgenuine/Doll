@@ -7,7 +7,7 @@ struct AboutView: View {
     var body: some View {
         VStack {
             VStack(spacing: 32) {
-                Text("About Doll")
+                Text(String(format: NSLocalizedString("About Doll", comment: ""), locale: nil, arguments: [Utils.appVersion]))
                         .font(.title)
                 Text("Icon from [Darius Dan - Flaticon](https://www.flaticon.com/free-icons/reminder)")
 
