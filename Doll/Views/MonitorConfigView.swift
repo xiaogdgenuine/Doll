@@ -20,6 +20,7 @@ struct MonitorConfigView: View {
     @State var selectedApp: MonitoredApp?
     @State var selectedAppItem: AppItem?
     @State var showGiantBadge: Bool = false
+    @State var iconIsMask: Bool = false
     @State var keyword: String = ""
     @State private var defaultFocusSet = false
     @State private var allAppItems: [AppItem] = []
@@ -80,7 +81,34 @@ struct MonitorConfigView: View {
                         pickApplication()
                     }
                 }
-                        .padding()
+                .padding()
+
+                HStack {
+                    if !isAddMode, let selectedApp = selectedApp {
+
+                        Toggle("Use the icon as a mask", isOn: $iconIsMask)
+                            .onChange(of: iconIsMask) { enabled in
+                                AppSettings.toggleIconMask(for: selectedApp.appName, value: enabled)
+                                 MonitorEngine.shared.statusBars.forEach {
+                                    $0.refreshIcon()
+                                }
+                            }
+                            .onAppear {
+                                iconIsMask = AppSettings.isIconMask(for: selectedApp.appName)
+                            }
+
+                        Toggle("Show a red arrow", isOn: $showGiantBadge)
+                            .onChange(of: showGiantBadge) { enabled in
+                                AppSettings.toggleGiantBadge(for: selectedApp.appName, value: enabled)
+                            }
+                            .onAppear {
+                                showGiantBadge = AppSettings.isGiantBadgeEnabled(for: selectedApp.appName)
+                            }
+
+                        Spacer()
+                    }
+                }
+                .padding()
 
                 ApplicationListView(activeItem: selectedAppBinding, allApps: filteredAppItems)
                         .onAppear {
@@ -107,13 +135,6 @@ struct MonitorConfigView: View {
                 HStack {
 
                     if !isAddMode, let selectedApp = selectedApp {
-                        Toggle("Show a red arrow so you don't miss any notifications! :)", isOn: $showGiantBadge)
-                            .onChange(of: showGiantBadge) { enabled in
-                                AppSettings.toggleGiantBadge(for: selectedApp.appName, value: enabled)
-                            }
-                            .onAppear {
-                                showGiantBadge = AppSettings.isGiantBadgeEnabled(for: selectedApp.appName)
-                            }
 
                         Spacer()
 

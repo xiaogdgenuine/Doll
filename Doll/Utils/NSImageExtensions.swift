@@ -67,6 +67,32 @@ extension NSImage {
         grayImage.addRepresentation(grayscale)
         return grayImage
     }
+
+    func invert() -> NSImage? {
+        guard let cgImage = cgImage(forProposedRect: nil, context: nil, hints: nil) else {
+            return nil
+        }
+
+        let ciImage = CIImage(cgImage: cgImage)
+
+        guard let filter = CIFilter(name: "CIColorInvert") else {
+            print("Could not create CIColorInvert filter")
+            return nil
+        }
+
+        filter.setValue(ciImage, forKey: kCIInputImageKey)
+        guard let outputImage = filter.outputImage else {
+            print("Could not obtain output CIImage from filter")
+            return nil
+        }
+
+        let context = CIContext(options: nil)
+        guard let cgOutImage = context.createCGImage(outputImage, from: outputImage.extent) else {
+            return nil
+        }
+
+        return NSImage(cgImage: cgOutImage, size: size)
+    }
 }
 
 extension NSBitmapImageRep {

@@ -28,4 +28,16 @@ class AppSettings {
     static func isGiantBadgeEnabled(for appName: String) -> Bool {
         AppSettings.giantBadgeConfigs[appName] ?? false
     }
+
+    @UserDefaultSetting("SETTINGS_APPS_ICON_MASK")
+    static var iconMasksConfigs: [String: Bool] = [:]
+
+    static func toggleIconMask(for appName: String, value: Bool) {
+        AppSettings.iconMasksConfigs[appName] = value
+    }
+
+    static func isIconMask(for appName: String) -> Bool {
+        AppSettings.iconMasksConfigs[appName] ?? false
+    }
+
 }
