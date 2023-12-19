@@ -67,7 +67,7 @@ But if you want to change stuffs, use right click, or left click while holding t
 
 Due to the limitation of Accessibility API(Can't watch for element's attribute value change), Doll has to sync badges by every second(Yep, the infamy **_Polling_** style).
 
-But don't worry about the performance, after all the synchronization happens only 864000 times per day, and all it does is just read and set few element's text, that's an operation executed less than **1ms**!
+But don't worry about the performance, after all the synchronization happens only 86400 times per day, and all it does is just read and set few element's text, that's an operation executed less than **1ms**!
 
 If you found any potential Bug or Performance issue, feel free to submit a PR!
 
